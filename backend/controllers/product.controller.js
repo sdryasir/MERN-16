@@ -1,4 +1,5 @@
 import {Product} from '../models/product.model.js'
+
 export const createNewProduct = async (req, res)=>{
     const data = req.body;
 
@@ -10,25 +11,29 @@ export const createNewProduct = async (req, res)=>{
     });
 }
 export const getAllProducts = async (req, res)=>{
-    // const qData = req.query;
     const products = await Product.find({})
-    res.json({
-        message:'Products endpoint called',
-        products
-    });
+    res.json(products);
 }
-export const getProductById = (req, res)=>{
-    const pData = req.params;
+export const getProductById = async(req, res)=>{
+    const {id} = req.params;
     
+    const product = await Product.findById(id)
     
     res.json({
         message:'Single product endpoint called',
-        pData
+        product
     });
 }
-export const updateProduct = (req, res)=>{
+export const updateProduct = async(req, res)=>{
+    const {id} = req.params;
+    const data = req.body;
+
+    await Product.findByIdAndUpdate(id, data);
+
     res.json({message:'Update product endpoint called'});
 }
-export const deleteProduct = (req, res)=>{
+export const deleteProduct = async (req, res)=>{
+    const {id} = req.params;
+    await Product.findByIdAndDelete(id);
     res.json({message:'delete product endpoint called'});
 }

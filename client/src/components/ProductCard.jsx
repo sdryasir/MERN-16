@@ -20,7 +20,7 @@ function ProductCard(props) {
 
   const handleAddToCart = (p)=>{
 
-    const foundItem = cart.find((i)=>i.id == p.id)
+    const foundItem = cart.find((i)=>i._id == p._id)
     if(!foundItem){
       p.qty = 1
       setCart([...cart, p])
@@ -33,7 +33,7 @@ function ProductCard(props) {
         <div className="card">
           <img src={props.product.image} className="card-img-top" alt="..."/>
           <div className="card-body text-center">
-              <button className="btn btn-primary w-100 mb-4" disabled={cart.find((i)=>i.id == props.product.id)? true:false} onClick={()=>handleAddToCart(props.product)}> {cart.find((i)=>i.id == props.product.id) ? 'ALREADY IN THE CART':'ADD TO CART'}</button>
+              <button className="btn btn-primary w-100 mb-4" disabled={cart.find((i)=>i._id == props.product._id)? true:false} onClick={()=>handleAddToCart(props.product)}> {cart.find((i)=>i._id == props.product._id) ? 'ALREADY IN THE CART':'ADD TO CART'}</button>
               <Link to={`/products/${props.product.slug}`} style={{textDecoration:'none', color:'#000'}}>
                 <h5 className="card-title">{props.product.title}</h5>
               </Link>

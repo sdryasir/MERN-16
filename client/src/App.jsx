@@ -10,6 +10,8 @@ import DetailPage from './pages/DetailPage';
 import { createContext } from 'react';
 import { useState, useEffect } from 'react';
 import Contact from './pages/Contact';
+import Topbar from './components/TopBar';
+import Footer from './components/Footer';
 
 
 export const CartContext = createContext()
@@ -31,8 +33,9 @@ export default function App() {
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>
+      <Topbar/>
+      <Navbar/>
       <BrowserRouter>
-        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -43,6 +46,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <Footer/>
     </CartContext.Provider>
   );
 }

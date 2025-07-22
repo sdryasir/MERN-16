@@ -7,10 +7,14 @@ const router = express.Router()
 
 router.route('/products/add').post(createNewProduct)
 router.route('/products').get(getAllProducts)
-router.route('/product/:name/:age/:qual').get(getProductById)
-router.route('/product/update').put(updateProduct)
-router.route('/product/delete').delete(deleteProduct)
+router.route('/product/:id').get(getProductById)
+router.route('/product/update/:id').put(updateProduct)
+router.route('/product/delete/:id').delete(deleteProduct)
 
 
 
 export default router
+
+
+
+

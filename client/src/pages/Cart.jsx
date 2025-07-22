@@ -9,20 +9,20 @@ function Cart() {
   };
 
   const handleDelete = (id) => {
-    const updatedCart = cart.filter(c => c.id !== id);
+    const updatedCart = cart.filter(c => c._id !== id);
     setCart(updatedCart);
   };
 
   const handleQtyIncrease = (item) => {
     const updatedCart = cart.map(c =>
-      c.id === item.id ? { ...c, qty: c.qty + 1 } : c
+      c._id === item._id ? { ...c, qty: c.qty + 1 } : c
     );
     setCart(updatedCart);
   };
 
   const handleQtyDecrease = (item) => {
     const updatedCart = cart.map(c =>
-      c.id === item.id && c.qty > 1 ? { ...c, qty: c.qty - 1 } : c
+      c._id === item._id && c.qty > 1 ? { ...c, qty: c.qty - 1 } : c
     );
     setCart(updatedCart);
   };
@@ -30,7 +30,7 @@ function Cart() {
   const handleChange = (e, item) => {
     const qty = Math.max(1, parseInt(e.target.value) || 1);
     const updatedCart = cart.map(c =>
-      c.id === item.id ? { ...c, qty: qty } : c
+      c._id === item._id ? { ...c, qty: qty } : c
     );
     setCart(updatedCart);
   };
@@ -85,7 +85,7 @@ function Cart() {
               <td>
                 <button
                   className='btn btn-danger'
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item._id)}
                 >
                   <i className='bi bi-trash3'></i>
                 </button>
