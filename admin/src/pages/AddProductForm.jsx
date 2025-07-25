@@ -1,15 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Dropzone from 'react-dropzone';
+import { MultiSelect } from 'react-multi-select-component';
 
-// ✅ Zod Schema
+import TiptapEditor from '../components/TipTap/TiptapEditor';
+
+const sizeOptions = [
+  { label: 'Small', value: 'S' },
+  { label: 'Medium', value: 'M' },
+  { label: 'Large', value: 'L' },
+];
+
+const colorOptions = [
+  { label: 'Red', value: 'red' },
+  { label: 'Blue', value: 'blue' },
+  { label: 'Black', value: 'black' },
+];
+
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(5, 'Description too short'),
   price: z.number().positive('Price must be positive'),
-  mainImage: z.any().refine((file) => file instanceof FileList && file.length === 1, 'Main image is required'),
-  galleryImages: z.any().refine((files) => files instanceof FileList && files.length > 0, 'Gallery images are required'),
+  discountPrice: z.number().nonnegative('Discount must be zero or more').optional(),
+  stock: z.number().int().nonnegative('Stock must be 0 or more'),
+  sku: z.string().min(1, 'SKU is required'),
+  slug: z.string().min(1, 'Slug is required'),
+  videoLink: z.string().url('Enter a valid video URL').optional(),
+  mainImage: z
+    .any()
+    .refine((file) => file instanceof FileList && file.length === 1, 'Main image is required'),
+  galleryImages: z
+    .any()
+    .refine((files) => Array.isArray(files) && files.length > 0, 'Gallery images required'),
+  size: z.array(z.object({ label: z.string(), value: z.string() })).nonempty('Select at least one size'),
+  color: z.array(z.object({ label: z.string(), value: z.string() })).nonempty('Select at least one color'),
+  longDescription: z.string().min(10, 'Long description is required'),
 });
 
 export default function AddProductForm() {
@@ -23,21 +50,53 @@ export default function AddProductForm() {
   });
 
   const [mainPreview, setMainPreview] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [longDesc, setLongDesc] = useState('');
+
+  // Sync size, color, and longDescription with hook form
+  useEffect(() => {
+    register('longDescription');
+    register('size');
+    register('color');
+  }, [register]);
+
+  useEffect(() => {
+    setValue('longDescription', longDesc);
+  }, [longDesc, setValue]);
+
+  useEffect(() => {
+    setValue('size', selectedSizes);
+  }, [selectedSizes, setValue]);
+
+  useEffect(() => {
+    setValue('color', selectedColors);
+  }, [selectedColors, setValue]);
 
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('price', data.price);
+    formData.append('discountPrice', data.discountPrice || '');
+    formData.append('stock', data.stock);
+    formData.append('sku', data.sku);
+    formData.append('slug', data.slug);
+    formData.append('videoLink', data.videoLink || '');
+    formData.append('longDescription', data.longDescription);
 
     formData.append('mainImage', data.mainImage[0]);
-    for (let i = 0; i < data.galleryImages.length; i++) {
-      formData.append('galleryImages', data.galleryImages[i]);
-    }
+    galleryFiles.forEach((file) => {
+      formData.append('galleryImages', file);
+    });
 
-    console.log('Submitting:', Object.fromEntries(formData));
-    alert('Submitted! (Check console)')
+    formData.append('size', JSON.stringify(data.size));
+    formData.append('color', JSON.stringify(data.color));
+
+    console.log('Submitting:', Object.fromEntries(formData.entries()));
+    alert('Submitted! Check console');
   };
 
   const handleMainImageChange = (e) => {
@@ -46,23 +105,25 @@ export default function AddProductForm() {
     if (file) setMainPreview(URL.createObjectURL(file));
   };
 
-  const handleGalleryDrop = (e) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    setValue('galleryImages', files);
-    const previews = Array.from(files).map((file) => URL.createObjectURL(file));
+  const handleDrop = (acceptedFiles) => {
+    const previews = acceptedFiles.map((file) => URL.createObjectURL(file));
     setGalleryPreviews(previews);
+    setGalleryFiles(acceptedFiles);
+    setValue('galleryImages', acceptedFiles);
   };
 
-  const handleGalleryBrowse = (e) => {
-    const files = e.target.files;
-    setValue('galleryImages', files);
-    const previews = Array.from(files).map((file) => URL.createObjectURL(file));
-    setGalleryPreviews(previews);
+  const removeGalleryImage = (index) => {
+    const newFiles = [...galleryFiles];
+    const newPreviews = [...galleryPreviews];
+    newFiles.splice(index, 1);
+    newPreviews.splice(index, 1);
+    setGalleryFiles(newFiles);
+    setGalleryPreviews(newPreviews);
+    setValue('galleryImages', newFiles);
   };
 
   return (
-    <form className="container my-5" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+    <form className="container bg-secondary my-5 p-5" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
       <h3>Add Product</h3>
 
       {/* Title */}
@@ -74,7 +135,7 @@ export default function AddProductForm() {
 
       {/* Description */}
       <div className="mb-3">
-        <label className="form-label">Description</label>
+        <label className="form-label">Short Description</label>
         <textarea className="form-control" rows={3} {...register('description')} />
         {errors.description && <div className="text-danger">{errors.description.message}</div>}
       </div>
@@ -86,50 +147,90 @@ export default function AddProductForm() {
         {errors.price && <div className="text-danger">{errors.price.message}</div>}
       </div>
 
-      {/* Main Image Upload */}
+      {/* Discount Price */}
       <div className="mb-3">
-        <label className="form-label">Main Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          className="form-control"
-          onChange={handleMainImageChange}
-        />
-        {errors.mainImage && <div className="text-danger">{errors.mainImage.message}</div>}
-        {mainPreview && (
-          <div className="mt-2">
-            <img src={mainPreview} alt="Main Preview" height="100" />
-          </div>
-        )}
+        <label className="form-label">Discount Price</label>
+        <input type="number" className="form-control" {...register('discountPrice', { valueAsNumber: true })} />
+        {errors.discountPrice && <div className="text-danger">{errors.discountPrice.message}</div>}
       </div>
 
-      {/* Gallery Image Dropzone */}
+      {/* Stock */}
+      <div className="mb-3">
+        <label className="form-label">Stock</label>
+        <input type="number" className="form-control" {...register('stock', { valueAsNumber: true })} />
+        {errors.stock && <div className="text-danger">{errors.stock.message}</div>}
+      </div>
+
+      {/* SKU */}
+      <div className="mb-3">
+        <label className="form-label">SKU</label>
+        <input type="text" className="form-control" {...register('sku')} />
+        {errors.sku && <div className="text-danger">{errors.sku.message}</div>}
+      </div>
+
+      {/* Slug */}
+      <div className="mb-3">
+        <label className="form-label">Slug</label>
+        <input type="text" className="form-control" {...register('slug')} />
+        {errors.slug && <div className="text-danger">{errors.slug.message}</div>}
+      </div>
+
+      {/* Video Link */}
+      <div className="mb-3">
+        <label className="form-label">Video Link (optional)</label>
+        <input type="text" className="form-control" {...register('videoLink')} />
+        {errors.videoLink && <div className="text-danger">{errors.videoLink.message}</div>}
+      </div>
+
+      {/* Long Description with TipTap */}
+      <div className="mb-3">
+        <label className="form-label">Long Description</label>
+        <TiptapEditor initialContent="" setDescription={setLongDesc} />
+        {errors.longDescription && <div className="text-danger mt-1">{errors.longDescription.message}</div>}
+      </div>
+
+      {/* Size */}
+      <div className="mb-3">
+        <label className="form-label">Size</label>
+        <MultiSelect options={sizeOptions} value={selectedSizes} onChange={setSelectedSizes} labelledBy="Select Size" />
+        {errors.size && <div className="text-danger">{errors.size.message}</div>}
+      </div>
+
+      {/* Color */}
+      <div className="mb-3">
+        <label className="form-label">Color</label>
+        <MultiSelect options={colorOptions} value={selectedColors} onChange={setSelectedColors} labelledBy="Select Color" />
+        {errors.color && <div className="text-danger">{errors.color.message}</div>}
+      </div>
+
+      {/* Main Image */}
+      <div className="mb-3">
+        <label className="form-label">Main Image</label>
+        <input type="file" accept="image/*" className="form-control" onChange={handleMainImageChange} />
+        {errors.mainImage && <div className="text-danger">{errors.mainImage.message}</div>}
+        {mainPreview && <img src={mainPreview} alt="Main" height="100" className="mt-2" />}
+      </div>
+
+      {/* Gallery Images Dropzone */}
       <div className="mb-3">
         <label className="form-label">Gallery Images</label>
-        <div
-          className="border border-secondary rounded p-4 text-center"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleGalleryDrop}
-        >
-          Drag & Drop Gallery Images Here
-          <br />
-          <small className="text-muted">or click below to browse</small>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            className="form-control mt-2"
-            onChange={handleGalleryBrowse}
-          />
+        <Dropzone onDrop={handleDrop} accept={{ 'image/*': [] }} multiple>
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps()} className="border border-secondary p-4 text-center rounded">
+              <input {...getInputProps()} />
+              <p>Drag & Drop or Click to Browse</p>
+            </div>
+          )}
+        </Dropzone>
+        {errors.galleryImages && <div className="text-danger">{errors.galleryImages.message}</div>}
+        <div className="d-flex flex-wrap gap-2 mt-2">
+          {galleryPreviews.map((src, i) => (
+            <div key={i} className="position-relative">
+              <img src={src} alt={`Gallery ${i}`} height="80" className="border" />
+              <button type="button" className="btn btn-sm btn-danger position-absolute top-0 end-0" onClick={() => removeGalleryImage(i)}>×</button>
+            </div>
+          ))}
         </div>
-        {errors.galleryImages && <div className="text-danger mt-1">{errors.galleryImages.message}</div>}
-        {galleryPreviews.length > 0 && (
-          <div className="mt-3 d-flex flex-wrap gap-2">
-            {galleryPreviews.map((src, i) => (
-              <img key={i} src={src} alt={`Gallery ${i}`} style={{ height: '80px', border: '1px solid #ccc' }} />
-            ))}
-          </div>
-        )}
       </div>
 
       <button type="submit" className="btn btn-primary">Submit Product</button>

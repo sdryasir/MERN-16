@@ -21,9 +21,10 @@ function Sidebar() {
                 <div className="navbar-nav w-100">
                     <Link to="/" className="nav-item nav-link active"><i className="fa fa-tachometer-alt me-2"></i>Dashboard</Link>
                     <div className="nav-item dropdown">
-                        <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i className="fa fa-laptop me-2"></i>Manage Products</a>
+                        <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i className="fa fa-laptop me-2"></i>Product & Cat</a>
                         <div className="dropdown-menu bg-transparent border-0">
-                            <Link to="/add-product" className="dropdown-item">Add New</Link>
+                            <Link to="/add-category" className="dropdown-item">Add New Category</Link>
+                            <Link to="/add-product" className="dropdown-item">Add New Product</Link>
                         </div>
                     </div>
                     <a href="widget.html" className="nav-item nav-link"><i className="fa fa-th me-2"></i>Widgets</a>

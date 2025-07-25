@@ -11,10 +11,16 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@tiptap/extension-text-style": "^3.0.7",
+    "@tiptap/react": "^3.0.7",
+    "@tiptap/starter-kit": "^3.0.7",
     "chart.js": "^4.5.0",
+    "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.61.0",
+    "react-multi-select-component": "^4.3.4",
     "react-router": "^7.7.0",
     "zod": "^4.0.8"
   },

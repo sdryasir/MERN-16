@@ -1,0 +1,87 @@
+/* Editor Content Styling */
+.ProseMirror {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-height: 300px;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  background-color: #fff;
+}
+
+/* Code Block Styling */
+code, pre {
+  font-family: 'Fira Code', monospace;
+  background-color: #f5f5f5;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #333;
+  overflow-x: auto;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Blockquote Styling */
+blockquote {
+  border-left: 4px solid #aaa;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #555;
+  font-style: italic;
+  background-color: #f9f9f9;
+}
+
+/* Control Bar Styling */
+.control-group {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  background: #f3f3f3;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.button-group span {
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-group span svg {
+  width: 20px;
+  height: 20px;
+  color: #444;
+}
+
+/* Hover effect */
+.button-group span:hover {
+  background-color: #e0e0e0;
+}
+
+/* Active formatting */
+.button-group span.is-active {
+  background-color: #d0d7ff;
+  color: #1a3cff;
+}
+
+.button-group span.is-active svg {
+  color: #1a3cff;
+}
+
+/* Disabled */
+.button-group span.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
