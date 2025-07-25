@@ -37,7 +37,7 @@ export default function AddProductForm() {
     }
 
     console.log('Submitting:', Object.fromEntries(formData));
-    alert('Submitted! (Check console)');
+    alert('Submitted! (Check console)')
   };
 
   const handleMainImageChange = (e) => {
