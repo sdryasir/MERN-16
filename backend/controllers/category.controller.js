@@ -8,13 +8,21 @@ export const createNewCategory = async (req, res)=>{
    const { title, isPublic } = req.body;
    const image = req.file;
 
-    console.log(image);
-    
+   const img = {
+    public_id:image.filename,
+    secure_url:image.path
+   }
 
-    // await Category.create(data)
+   const data = {
+    title,
+    image:img,
+    isPublic
+   }
+
+    await Category.create(data)
     
     res.json({
-        message:'Create Categories endpoint called',
+        message:'Category has been saved',
     });
 }
 export const getAllCategories = async (req, res)=>{

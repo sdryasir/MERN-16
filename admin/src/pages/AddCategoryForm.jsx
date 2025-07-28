@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ToastContainer, toast } from 'react-toastify';
+import { useRef } from "react";
 
 // ✅ Zod Schema
 const categorySchema = z.object({
@@ -12,6 +14,9 @@ const categorySchema = z.object({
 
 function AddCategoryForm() {
   const [imagePreview, setImagePreview] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef();
 
   const {
     register,
@@ -28,8 +33,10 @@ function AddCategoryForm() {
     },
   });
 
+  
+
   const onSubmit = async (data) => {
-    console.log('Validated Data:', data);
+    
 
     const formData = new FormData();
     formData.append('title', data.title);
@@ -38,6 +45,7 @@ function AddCategoryForm() {
       formData.append('image', data.image[0]);
     }
 
+    setLoading(true);
     const res = await fetch('http://localhost:7000/categories/add', {
       method: 'POST',
       body: formData,
@@ -45,15 +53,19 @@ function AddCategoryForm() {
 
     const result = await res.json();
 
+
+
     if (res.ok) {
-      console.log('Category added:', result);
+      toast.success(result.message);
+      reset();
+      fileInputRef.current.value = "";
     } else {
       console.error('Server error:', result);
+      toast.error(result.message);
     }
 
+    setLoading(false);
 
-
-    // Post formData to backend if needed
   };
 
   const handleImageChange = (e) => {
@@ -64,6 +76,8 @@ function AddCategoryForm() {
       setImagePreview(null);
     }
   };
+
+  
 
   return (
     <div className="container mt-4">
@@ -91,6 +105,10 @@ function AddCategoryForm() {
             accept="image/*"
             {...register('image')}
             onChange={handleImageChange}
+            ref={(e) => {
+              register("image").ref(e);
+              fileInputRef.current = e;
+            }}
           />
           {errors.image && <div className="invalid-feedback">{errors.image.message}</div>}
           {imagePreview && (
@@ -118,8 +136,20 @@ function AddCategoryForm() {
           </label>
         </div>
 
-        <button type="submit" className="btn btn-primary">Add Category</button>
+        <button type="submit" disabled={loading} className="btn btn-primary">{loading ? 'Saving...':'Add Category'} </button>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        />
     </div>
   );
 }
