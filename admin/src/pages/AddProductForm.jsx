@@ -30,9 +30,7 @@ const schema = z.object({
   videoLink: z.string().url('Enter a valid video URL').optional(),
   mainImage: z
     .any()
-    .refine((file) => file instanceof FileList && file.length === 1, 'Main image is required'),
-  galleryImages: z
-    .any()
+    .refine((file) => file instanceof FileList && file.length === 1, 'Main image is required'), galleryImages: z.any()
     .refine((files) => Array.isArray(files) && files.length > 0, 'Gallery images required'),
   size: z.array(z.object({ label: z.string(), value: z.string() })).nonempty('Select at least one size'),
   color: z.array(z.object({ label: z.string(), value: z.string() })).nonempty('Select at least one color'),
@@ -75,7 +73,7 @@ export default function AddProductForm() {
     setValue('color', selectedColors);
   }, [selectedColors, setValue]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
@@ -88,12 +86,26 @@ export default function AddProductForm() {
     formData.append('longDescription', data.longDescription);
 
     formData.append('mainImage', data.mainImage[0]);
+
+
     galleryFiles.forEach((file) => {
       formData.append('galleryImages', file);
     });
 
     formData.append('size', JSON.stringify(data.size));
     formData.append('color', JSON.stringify(data.color));
+
+
+
+    const res = await fetch('http://localhost:7000/products/add', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await res.json();
+
+    console.log("result", result);
+    
 
     console.log('Submitting:', Object.fromEntries(formData.entries()));
     alert('Submitted! Check console');

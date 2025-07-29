@@ -3,7 +3,33 @@ import {Product} from '../models/product.model.js'
 export const createNewProduct = async (req, res)=>{
     const data = req.body;
 
-    await Product.create(data)
+    const images = req.files;
+
+
+    console.log("----------- ", data);
+    
+
+    const mainImage = {
+        public_id: images.mainImage[0].filename,
+        secure_url: images.mainImage[0].path,
+    };
+
+
+    const galleryImages = images.galleryImages.map((imgObj)=>{
+        return {
+            public_id: imgObj.filename,
+            secure_url: imgObj.path,
+        }
+    })
+
+
+    
+
+    console.log("mainImage ------- ", mainImage);
+    console.log("galleryImages ------- ", galleryImages);
+    
+
+    // await Product.create(data)
     
     res.json({
         message:'Create Products endpoint called',
