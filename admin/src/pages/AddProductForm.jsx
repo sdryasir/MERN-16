@@ -26,6 +26,7 @@ const schema = z.object({
   discountPrice: z.number().nonnegative('Discount must be zero or more').optional(),
   stock: z.number().int().nonnegative('Stock must be 0 or more'),
   sku: z.string().min(1, 'SKU is required'),
+  category: z.string().min(1, 'Category is required'),
   slug: z.string().min(1, 'Slug is required'),
   videoLink: z.string().url('Enter a valid video URL').optional(),
   mainImage: z
@@ -53,6 +54,7 @@ export default function AddProductForm() {
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [longDesc, setLongDesc] = useState('');
+  const [categories, setCategories] = useState([])
 
   // Sync size, color, and longDescription with hook form
   useEffect(() => {
@@ -73,6 +75,16 @@ export default function AddProductForm() {
     setValue('color', selectedColors);
   }, [selectedColors, setValue]);
 
+
+  useEffect(()=>{
+    const getAllCategories = async ()=>{
+      const response = await fetch('http://localhost:7000/categories');
+      const data = await response.json();
+      setCategories(data);
+    }
+    getAllCategories();
+  },[])
+
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append('title', data.title);
@@ -83,6 +95,7 @@ export default function AddProductForm() {
     formData.append('sku', data.sku);
     formData.append('slug', data.slug);
     formData.append('videoLink', data.videoLink || '');
+    formData.append('category', data.category);
     formData.append('longDescription', data.longDescription);
 
     formData.append('mainImage', data.mainImage[0]);
@@ -150,6 +163,18 @@ export default function AddProductForm() {
         <label className="form-label">Short Description</label>
         <textarea className="form-control" rows={3} {...register('description')} />
         {errors.description && <div className="text-danger">{errors.description.message}</div>}
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Category</label>
+        <select className="form-select" {...register('category')}>
+          <option value="">Select a category</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.title}
+            </option>
+          ))}
+        </select>
+        {errors.category && <div className="text-danger">{errors.category.message}</div>}
       </div>
 
       {/* Price */}

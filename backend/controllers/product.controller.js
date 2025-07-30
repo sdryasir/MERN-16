@@ -1,13 +1,10 @@
-import {Product} from '../models/product.model.js'
+import Product from '../models/product.model.js'
 
 export const createNewProduct = async (req, res)=>{
     const data = req.body;
 
     const images = req.files;
-
-
-    console.log("----------- ", data);
-    
+  
 
     const mainImage = {
         public_id: images.mainImage[0].filename,
@@ -25,11 +22,17 @@ export const createNewProduct = async (req, res)=>{
 
     
 
-    console.log("mainImage ------- ", mainImage);
-    console.log("galleryImages ------- ", galleryImages);
+    data.mainImage = mainImage;
+    data.galleryImages = galleryImages;
+
+    data.size = JSON.parse(data.size);
+    data.color = JSON.parse(data.color);
+
+
+    console.log("data ------- ", data);
     
 
-    // await Product.create(data)
+    await Product.create(data)
     
     res.json({
         message:'Create Products endpoint called',
@@ -63,3 +66,6 @@ export const deleteProduct = async (req, res)=>{
     await Product.findByIdAndDelete(id);
     res.json({message:'delete product endpoint called'});
 }
+
+
+

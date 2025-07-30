@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 const imageSchema = new mongoose.Schema({
   public_id: { type: String, required: true },
@@ -14,6 +15,7 @@ const productSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  category:{ type:mongoose.Schema.Types.ObjectId},
   discountPrice: { type: Number, default: 0 },
   stock: { type: Number, required: true },
   sku: { type: String, required: true },
