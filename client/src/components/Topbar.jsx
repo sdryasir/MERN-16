@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Link } from 'react-router'
 function Topbar() {
   return (
     <div className="container-fluid">
@@ -52,10 +52,10 @@ function Topbar() {
         </div>
         <div className="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
             <div className="col-lg-4">
-                <a href="" className="text-decoration-none">
+                <Link to="/" className="text-decoration-none">
                     <span className="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
                     <span className="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
-                </a>
+                </Link>
             </div>
             <div className="col-lg-4 col-6 text-left">
                 <form action="">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 // const featuredProducts = [
 //   { id: 1, image: "assets/img/product-1.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 5 },
@@ -67,15 +68,15 @@ const FeaturedProducts = () => {
                 </div>
               </div>
               <div className="text-center py-4">
-                <a className="h6 text-decoration-none text-truncate" href="#">{product.title}</a>
-                {/* <div className="d-flex align-items-center justify-content-center mt-2">
-                  <h5>${product.price.toFixed(2)}</h5>
-                  <h6 className="text-muted ml-2"><del>${product.oldPrice.toFixed(2)}</del></h6>
-                </div> */}
-                {/* <div className="d-flex align-items-center justify-content-center mb-1">
+                <Link className="h6 text-decoration-none" to={`/products/${product.slug}`}>{product.title}</Link>
+                <div className="d-flex align-items-center justify-content-center mt-2">
+                  <h5>PKR. {product.price}</h5>
+                  <h6 className="text-muted ml-2"><del>PKR. {product.discountPrice}</del></h6>
+                </div>
+                <div className="d-flex align-items-center justify-content-center mb-1">
                   {renderStars(product.rating)}
                   <small>(99)</small>
-                </div> */}
+                </div>
               </div>
             </div>
           </div>

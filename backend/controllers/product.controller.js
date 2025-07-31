@@ -43,6 +43,16 @@ export const getAllProducts = async (req, res)=>{
     const products = await Product.find({})
     res.json(products);
 }
+export const getProductBySlug = async(req, res)=>{
+    const {slug} = req.params;
+    
+    const product = await Product.find({slug});
+    
+    res.json({
+        message:'Single product endpoint called',
+        product
+    });
+}
 export const getProductById = async(req, res)=>{
     const {id} = req.params;
     

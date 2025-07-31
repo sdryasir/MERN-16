@@ -33,9 +33,10 @@ export default function App() {
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>
-      <Topbar/>
-      <Navbar/>
+      
       <BrowserRouter>
+        <Topbar/>
+        <Navbar/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
