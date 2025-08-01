@@ -1,20 +1,7 @@
 import React, {useState, useEffect} from "react";
+import { useFetch } from "../hook/useFetch";
 
-const Categories = () => {
-
-  const [categories, setCategories] = useState([]);
-
-  useEffect(()=>{
-      const getAllCategories = async ()=>{
-        const res = await fetch('http://localhost:7000/categories');
-        const data = await res.json();
-        console.log(data);
-        
-        setCategories(data);
-      }
-      getAllCategories();
-    },[])
-
+const Categories = ({categories}) => {
 
   return (
     <div className="container-fluid pt-5">

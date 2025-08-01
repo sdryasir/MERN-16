@@ -32,22 +32,7 @@ const renderStars = (rating) => {
   return stars;
 };
 
-const FeaturedProducts = () => {
-
-
-
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-
-  useEffect(()=>{
-    const getAllProducts = async ()=>{
-      const res = await fetch('http://localhost:7000/products');
-      const data = await res.json();
-      console.log(data);
-      
-      setFeaturedProducts(data);
-    }
-    getAllProducts();
-  },[])
+const FeaturedProducts = ({products}) => {
 
   return (
     <div className="container-fluid pt-5 pb-3">
@@ -55,7 +40,7 @@ const FeaturedProducts = () => {
         <span className="bg-secondary pr-3">Featured Products</span>
       </h2>
       <div className="row px-xl-5">
-        {featuredProducts?.map((product) => (
+        {products?.map((product) => (
           <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={product._id}>
             <div className="product-item bg-light mb-4">
               <div className="product-img position-relative overflow-hidden">

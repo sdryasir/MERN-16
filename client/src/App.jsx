@@ -10,8 +10,11 @@ import DetailPage from './pages/DetailPage';
 import { createContext } from 'react';
 import { useState, useEffect } from 'react';
 import Contact from './pages/Contact';
-import Topbar from './components/TopBar';
+import Topbar from './components/Topbar';
 import Footer from './components/Footer';
+import { useFetch } from './hook/useFetch';
+import SignupForm from './pages/Signup';
+import SignInForm from './pages/Signin';
 
 
 export const CartContext = createContext()
@@ -24,9 +27,8 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const {data:categories, error, loading} = useFetch('http://localhost:7000/categories');
 
-
-  
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -36,14 +38,15 @@ export default function App() {
       
       <BrowserRouter>
         <Topbar/>
-        <Navbar/>
+        <Navbar categories={categories}/>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home categories={categories} />} />
           <Route path="/about" element={<About />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/products/:slug" element={<DetailPage />} />
           <Route path="/contact" element={<Contact/>} />
+          <Route path="/signup" element={<SignupForm/>} />
+          <Route path="/signin" element={<SignInForm/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

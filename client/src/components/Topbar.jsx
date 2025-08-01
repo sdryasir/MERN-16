@@ -17,8 +17,8 @@ function Topbar() {
                     <div className="btn-group">
                         <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
                         <div className="dropdown-menu dropdown-menu-right">
-                            <button className="dropdown-item" type="button">Sign in</button>
-                            <button className="dropdown-item" type="button">Sign up</button>
+                            <Link to={'/signin'} className="dropdown-item" type="button">Sign in</Link>
+                            <Link to={'/signup'} className="dropdown-item" type="button">Sign up</Link>
                         </div>
                     </div>
                     <div className="btn-group mx-2">

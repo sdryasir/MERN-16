@@ -1,27 +1,16 @@
 import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router';
+import { useFetch } from '../hook/useFetch';
 
 import { CartContext } from '../App';
 import { useContext } from 'react';
-function Navbar() {
+function Navbar({categories}) {
 
 
   const {cart, setCart} = useContext(CartContext)
 
-  const [categories, setCategories] = useState([]);
   
-    useEffect(()=>{
-        const getAllCategories = async ()=>{
-          const res = await fetch('http://localhost:7000/categories');
-          const data = await res.json();
-          console.log(data);
-          
-          setCategories(data);
-        }
-        getAllCategories();
-      },[])
   
-
   const [showMenu, setShowMenu] = useState(false);
   const handleToggle = ()=>{
     setShowMenu(!showMenu);
@@ -39,7 +28,7 @@ function Navbar() {
                 <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light" id="navbar-vertical" style={{width: 'calc(100% - 30px)', zIndex: '999'}}>
                     <div class="navbar-nav w-100">
                         {
-                            categories.map((category, index)=>(
+                            categories?.map((category, index)=>(
                                 <a href="" class="nav-item nav-link">{category.title}</a>
                             ))
                         }
