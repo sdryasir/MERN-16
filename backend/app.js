@@ -14,7 +14,10 @@ connectDB().catch((e)=>console.log("Error in Connection", e));
 
 
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // your frontend
+  credentials: true                // allow cookies
+}));
 app.use(bodyParser.json());
 app.use(productRoutes);
 app.use(categoryRoutes);
