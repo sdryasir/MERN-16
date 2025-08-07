@@ -5,6 +5,7 @@ import productRoutes from './routes/product.routes.js'
 import categoryRoutes from './routes/category.routes.js'
 import userRoutes from './routes/user.routes.js'
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import { connectDB } from './config/db.js';
 import cors from 'cors'
 
@@ -19,6 +20,7 @@ app.use(cors({
   credentials: true                // allow cookies
 }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(productRoutes);
 app.use(categoryRoutes);
 app.use(userRoutes);

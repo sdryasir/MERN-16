@@ -27,17 +27,23 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+
+  const {data: myData, error:meError, meLoading} = useFetch('http://localhost:7000/users/me');
+
+
   const {data:categories, error, loading} = useFetch('http://localhost:7000/categories');
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+
+
   return (
     <CartContext.Provider value={{ cart, setCart }}>
       
       <BrowserRouter>
-        <Topbar/>
+        <Topbar myData={myData}/>
         <Navbar categories={categories}/>
         <Routes>
           <Route path="/" element={<Home categories={categories} />} />

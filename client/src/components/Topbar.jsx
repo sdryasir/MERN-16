@@ -1,6 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router'
-function Topbar() {
+function Topbar({myData}) {
+
+    console.log(myData);
+    
   return (
     <div className="container-fluid">
         <div className="row bg-secondary py-1 px-xl-5">
@@ -15,11 +18,30 @@ function Topbar() {
             <div className="col-lg-6 text-center text-lg-right">
                 <div className="d-inline-flex align-items-center">
                     <div className="btn-group">
-                        <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
-                        <div className="dropdown-menu dropdown-menu-right">
-                            <Link to={'/signin'} className="dropdown-item" type="button">Sign in</Link>
-                            <Link to={'/signup'} className="dropdown-item" type="button">Sign up</Link>
-                        </div>
+
+                        {
+                            myData && myData?.fullname ? (
+                                <>
+                                    <>
+                                    <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{myData?.fullname}</button>
+                                    <div className="dropdown-menu dropdown-menu-right">
+                                        <Link to={'/logout'} className="dropdown-item" type="button">Logout</Link>
+                                    </div>
+                                </>
+                                </>
+                            ):(
+                                <>
+                                    <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
+                                    <div className="dropdown-menu dropdown-menu-right">
+                                        <Link to={'/signin'} className="dropdown-item" type="button">Sign in</Link>
+                                        <Link to={'/signup'} className="dropdown-item" type="button">Sign up</Link>
+                                    </div>
+                                </>
+                            )
+                        }
+
+
+                        
                     </div>
                     <div className="btn-group mx-2">
                         <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>

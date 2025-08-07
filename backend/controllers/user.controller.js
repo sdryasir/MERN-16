@@ -40,7 +40,12 @@ export const signinUser = async (req, res)=>{
 
 
    //Sign a JWT Token
-   const token = jwt.sign({user}, process.env.JWT_SECRET, { expiresIn: '1h' });
+   const token = jwt.sign({
+    id:user._id,
+    email:user.email,
+    name:user.fullname,
+    role:user.role
+   }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
    res.cookie("jwt-token", token, {
     httpOnly: true,
@@ -52,4 +57,10 @@ export const signinUser = async (req, res)=>{
    res.json({
         message:'User has been logged in',
     });
+}
+
+
+export const getMe = async (req, res, next)=>{
+    const user = await User.findById(req.user.id).select("-password");  
+    res.status(200).json(user)
 }
