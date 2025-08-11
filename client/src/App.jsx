@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import { useFetch } from './hook/useFetch';
 import SignupForm from './pages/Signup';
 import SignInForm from './pages/Signin';
+import AuthProvider from './contexts/AuthProvider';
 
 
 export const CartContext = createContext()
@@ -28,7 +29,7 @@ export default function App() {
   });
 
 
-  const {data: myData, error:meError, meLoading} = useFetch('http://localhost:7000/users/me');
+  // const {data: myData, error:meError, meLoading} = useFetch('http://localhost:7000/users/me');
 
 
   const {data:categories, error, loading} = useFetch('http://localhost:7000/categories');
@@ -40,23 +41,24 @@ export default function App() {
 
 
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
-      
-      <BrowserRouter>
-        <Topbar myData={myData}/>
-        <Navbar categories={categories}/>
-        <Routes>
-          <Route path="/" element={<Home categories={categories} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/products/:slug" element={<DetailPage />} />
-          <Route path="/contact" element={<Contact/>} />
-          <Route path="/signup" element={<SignupForm/>} />
-          <Route path="/signin" element={<SignInForm/>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-      <Footer/>
-    </CartContext.Provider>
+    <AuthProvider>
+      <CartContext.Provider value={{ cart, setCart }}>
+        <BrowserRouter>
+          <Topbar/>
+          <Navbar categories={categories}/>
+          <Routes>
+            <Route path="/" element={<Home categories={categories} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/products/:slug" element={<DetailPage />} />
+            <Route path="/contact" element={<Contact/>} />
+            <Route path="/signup" element={<SignupForm/>} />
+            <Route path="/signin" element={<SignInForm/>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <Footer/>
+      </CartContext.Provider>
+    </AuthProvider>
   );
 }

@@ -1,8 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router'
-function Topbar({myData}) {
 
-    console.log(myData);
+import { useAuth } from '../contexts/AuthProvider'
+
+function Topbar() {
+
+  const {user, error, loading} = useAuth();
+  
     
   return (
     <div className="container-fluid">
@@ -20,10 +24,10 @@ function Topbar({myData}) {
                     <div className="btn-group">
 
                         {
-                            myData && myData?.fullname ? (
+                            user && user?.fullname ? (
                                 <>
                                     <>
-                                    <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{myData?.fullname}</button>
+                                    <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{loading ? "loading": user?.fullname}</button>
                                     <div className="dropdown-menu dropdown-menu-right">
                                         <Link to={'/logout'} className="dropdown-item" type="button">Logout</Link>
                                     </div>
@@ -101,3 +105,39 @@ function Topbar({myData}) {
 }
 
 export default Topbar
+
+
+
+
+
+
+
+
+// function Test({childern}){
+//     return(
+//         <div className="row">
+//             {childern}
+//         </div>
+//     )
+// }
+
+
+// <Test>
+//     <ul>
+//         <li>
+//             <a href=""></a>
+//         </li>
+//         <li>
+//             <a href=""></a>
+//         </li>
+//         <li>
+//             <a href=""></a>
+//         </li>
+//         <li>
+//             <a href=""></a>
+//         </li>
+//         <li>
+//             <a href=""></a>
+//         </li>
+//     </ul>
+// </Test>
