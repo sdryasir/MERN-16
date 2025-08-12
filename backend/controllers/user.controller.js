@@ -64,3 +64,14 @@ export const getMe = async (req, res, next)=>{
     const user = await User.findById(req.user.id).select("-password");  
     res.status(200).json(user)
 }
+
+export const logout = async (req, res, next) => {
+  res.cookie("jwt-token", "", {
+    httpOnly: true,
+    maxAge: 0,
+    secure: false, // set to true in production
+    sameSite: "lax",
+  });
+
+  res.json({ message: "User has been logged out" });
+};

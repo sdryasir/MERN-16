@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthProvider'
 
 function Topbar() {
 
-  const {user, error, loading} = useAuth();
+  const {user, error, loading, logout} = useAuth();
   
     
   return (
@@ -29,7 +29,7 @@ function Topbar() {
                                     <>
                                     <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{loading ? "loading": user?.fullname}</button>
                                     <div className="dropdown-menu dropdown-menu-right">
-                                        <Link to={'/logout'} className="dropdown-item" type="button">Logout</Link>
+                                        <button onClick={logout} className="dropdown-item" type="button">Logout</button>
                                     </div>
                                 </>
                                 </>

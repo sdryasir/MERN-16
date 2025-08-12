@@ -4,6 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePost } from "../hook/usePost";
 import { useNavigate } from 'react-router';
+import { useAuth } from "../contexts/AuthProvider";
+import { Navigate } from "react-router";
 
 // Zod schema for validation
 const schema = z.object({
@@ -11,9 +13,11 @@ const schema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-
-
 export default function SignInForm() {
+  const {user, error:userError, loading:userLoading} = useAuth();
+  if(userLoading) return <p>Loading...</p>;
+  if(user && user?.fullname) return <Navigate to='/'/>;
+
   const {
     register,
     handleSubmit,
@@ -27,13 +31,10 @@ export default function SignInForm() {
   const {postData, response, error, loading} = usePost('http://localhost:7000/users/signin');
 
 
-  console.log(error);
-  
-
   const onSubmit = async (data) => {
     await postData(data);
-    navigate('/');
-    // window.location.href= '/'
+    // navigate('/');
+    window.location.href= '/'
   };
 
   return (

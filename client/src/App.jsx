@@ -29,9 +29,6 @@ export default function App() {
   });
 
 
-  // const {data: myData, error:meError, meLoading} = useFetch('http://localhost:7000/users/me');
-
-
   const {data:categories, error, loading} = useFetch('http://localhost:7000/categories');
 
   useEffect(() => {
