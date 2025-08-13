@@ -16,6 +16,8 @@ import { useFetch } from './hook/useFetch';
 import SignupForm from './pages/Signup';
 import SignInForm from './pages/Signin';
 import AuthProvider from './contexts/AuthProvider';
+import Dashboard from './pages/Dashboard';
+import Protected from './pages/Protected';
 
 
 export const CartContext = createContext()
@@ -51,6 +53,7 @@ export default function App() {
             <Route path="/contact" element={<Contact/>} />
             <Route path="/signup" element={<SignupForm/>} />
             <Route path="/signin" element={<SignInForm/>} />
+            <Route path="/dashboard" element={<Protected><Dashboard/></Protected>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
