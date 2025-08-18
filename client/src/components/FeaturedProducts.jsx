@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { useCart } from "../contexts/CartProvider";
 
 // const featuredProducts = [
 //   { id: 1, image: "assets/img/product-1.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 5 },
@@ -34,6 +35,9 @@ const renderStars = (rating) => {
 
 const FeaturedProducts = ({products}) => {
 
+
+  const {addToCart, removeFromCart} = useCart();
+
   return (
     <div className="container-fluid pt-5 pb-3">
       <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
@@ -46,7 +50,7 @@ const FeaturedProducts = ({products}) => {
               <div className="product-img position-relative overflow-hidden">
                 <img className="img-fluid w-100" src={`${product?.mainImage?.secure_url}`} alt={product.title} />
                 <div className="product-action">
-                  <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-shopping-cart"></i></a>
+                  <button className="btn btn-outline-dark btn-square" onClick={addToCart} ><i className="fa fa-shopping-cart"></i></button>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="far fa-heart"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-sync-alt"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-search"></i></a>

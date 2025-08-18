@@ -7,9 +7,6 @@ import { useContext } from 'react';
 function Navbar({categories}) {
 
 
-  const {cart, setCart} = useContext(CartContext)
-
-  
   
   const [showMenu, setShowMenu] = useState(false);
   const handleToggle = ()=>{
