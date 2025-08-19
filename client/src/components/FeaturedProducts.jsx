@@ -50,7 +50,7 @@ const FeaturedProducts = ({products}) => {
               <div className="product-img position-relative overflow-hidden">
                 <img className="img-fluid w-100" src={`${product?.mainImage?.secure_url}`} alt={product.title} />
                 <div className="product-action">
-                  <button className="btn btn-outline-dark btn-square" onClick={addToCart} ><i className="fa fa-shopping-cart"></i></button>
+                  <button className="btn btn-outline-dark btn-square" onClick={()=>addToCart(product)} ><i className="fa fa-shopping-cart"></i></button>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="far fa-heart"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-sync-alt"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-search"></i></a>

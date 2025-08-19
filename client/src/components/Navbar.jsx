@@ -4,7 +4,13 @@ import { useFetch } from '../hook/useFetch';
 
 import { CartContext } from '../App';
 import { useContext } from 'react';
+import { useCart } from '../contexts/CartProvider';
 function Navbar({categories}) {
+
+
+
+    const {cartState} = useCart();
+    
 
 
   
@@ -63,7 +69,7 @@ function Navbar({categories}) {
                             </a>
                             <a href="" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
-                                <span class="badge text-secondary border border-secondary rounded-circle" style={{paddingBottom: '2px'}}>0</span>
+                                <span class="badge text-secondary border border-secondary rounded-circle" style={{paddingBottom: '2px'}}>{cartState?.length}</span>
                             </a>
                         </div>
                     </div>
