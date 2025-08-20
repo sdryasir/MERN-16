@@ -67,10 +67,10 @@ function Navbar({categories}) {
                                 <i class="fas fa-heart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle" style={{paddingBottom: '2px'}}>0</span>
                             </a>
-                            <a href="" class="btn px-0 ml-3">
+                            <Link to="/cart" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle" style={{paddingBottom: '2px'}}>{cartState?.length}</span>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </nav>

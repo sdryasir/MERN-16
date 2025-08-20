@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import { useCart } from "../contexts/CartProvider";
+import { useAuth } from "../contexts/AuthProvider";
+import { useNavigate } from "react-router";
 
-// const featuredProducts = [
-//   { id: 1, image: "assets/img/product-1.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 5 },
-//   { id: 2, image: "assets/img/product-2.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 4.5 },
-//   { id: 3, image: "assets/img/product-3.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 3.5 },
-//   { id: 4, image: "assets/img/product-4.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 3 },
-//   { id: 5, image: "assets/img/product-5.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 5 },
-//   { id: 6, image: "assets/img/product-6.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 4.5 },
-//   { id: 7, image: "assets/img/product-7.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 3.5 },
-//   { id: 8, image: "assets/img/product-8.jpg", name: "Product Name Goes Here", price: 123, oldPrice: 123, rating: 3 },
-// ];
+
 
 const renderStars = (rating) => {
   const stars = [];
@@ -37,6 +30,13 @@ const FeaturedProducts = ({products}) => {
 
 
   const {addToCart, removeFromCart} = useCart();
+  const {user} = useAuth();
+
+  const navigate = useNavigate();
+
+  const redirectUser = ()=>{
+    navigate('/signin');
+  }
 
   return (
     <div className="container-fluid pt-5 pb-3">
@@ -50,7 +50,11 @@ const FeaturedProducts = ({products}) => {
               <div className="product-img position-relative overflow-hidden">
                 <img className="img-fluid w-100" src={`${product?.mainImage?.secure_url}`} alt={product.title} />
                 <div className="product-action">
-                  <button className="btn btn-outline-dark btn-square" onClick={()=>addToCart(product)} ><i className="fa fa-shopping-cart"></i></button>
+                  {
+                    user && user?.fullname ? <button className="btn btn-outline-dark btn-square" onClick={()=>addToCart(product)} ><i className="fa fa-shopping-cart"></i></button>:
+                    <button className="btn btn-outline-dark btn-square" onClick={redirectUser}><i className="fa fa-shopping-cart"></i></button>
+                  }
+                  
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="far fa-heart"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-sync-alt"></i></a>
                   <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-search"></i></a>
