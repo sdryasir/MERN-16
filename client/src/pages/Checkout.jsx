@@ -4,10 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../contexts/AuthProvider";
+import { loadStripe } from "@stripe/stripe-js";
 
+
+const stripePromise = loadStripe("pk_test_51JXUPNLs3WLhYCTdb6263j1MdZgKdGAIcneTvUokHLpJl4d5dsVdRQ5AxyIKdnAeI2vA8pPOddH5s5rFkZ2x78ZS008FJnKsVC");
 
 const formSchema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
+  fullname: z.string().min(2, "Full name is required"),
   email: z.string().email("Invalid email address"),
   mobile: z
     .string()
@@ -26,8 +29,11 @@ const CheckoutPage = () => {
 
     const {cartState} = useCart()
     const {user} = useAuth();
-
-    console.log(user);
+    
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(null);
+    const [response, setResponse] = useState(null);
     
 
     const [shippingCharges, setShippingCharges] = useState(300);
@@ -45,9 +51,71 @@ const CheckoutPage = () => {
         },
     });
 
-    const onSubmit = (data) => {
-        console.log("✅ Form Data:", data);
+    const onSubmit = async (data) => {
+        try {
+          const res = await fetch(`http://localhost:7000/users/update/${user?._id}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+
+          const json = await res.json();
+
+          if (!res.ok) {
+            setError(err.message || "Something went wrong");
+            throw new Error(json.message || "Something went wrong");
+          }
+
+          setResponse(json);
+
+          if(response.success){
+            setMessage('User Shipping detail has been updated');
+            console.log("asdaasdasd", message);
+            
+          }
+        } catch (err) {
+          setError(err?.message || "Something went wrong");
+        } finally {
+          setLoading(false);
+        }
     };
+
+
+
+    const handleCheckout = async () => {
+      try {
+        // Call your backend to create a checkout session
+        const response = await fetch("http://localhost:7000/checkout/sessions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: [
+              { id: "prod_123", quantity: 1 }, // pass cart items or product info
+            ],
+          }),
+        });
+
+        const session = await response.json();
+
+        // Redirect to Stripe Checkout
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+
+        if (error) {
+          console.error("Stripe Checkout Error:", error);
+        }
+      } catch (err) {
+        console.error("Checkout Error:", err);
+      }
+    }
     
         
 
@@ -72,6 +140,13 @@ const CheckoutPage = () => {
       <h5 className="section-title position-relative text-uppercase mb-3">
         <span className="bg-secondary pr-3">Billing Address</span>
       </h5>
+      {
+        message && (
+          <div className="alert alert-success">
+            <p>{message}</p>
+          </div>
+        )
+      }
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="bg-light p-30 mb-5">
           <div className="row">
@@ -192,7 +267,7 @@ const CheckoutPage = () => {
           </div>
         </div>
         <button className="btn btn-primary px-4" type="submit">
-          Save Shipping Details
+          {loading ? 'Updating...' : 'Save Shipping Details'}
         </button>
       </form>
     </div>
@@ -206,9 +281,9 @@ const CheckoutPage = () => {
             <div className="border-bottom">
               <h6 className="mb-3">Products</h6>
               {
-                cartState.map((item)=>{
+                cartState.map((item, idx)=>{
                     return (
-                        <div className="d-flex justify-content-between">
+                        <div key={idx} className="d-flex justify-content-between">
                             <p>{item.title?.length > 15 ? item.title.slice(0, 30) + "..." : item.title}</p>
                             <p>PKR. {item.price*item.quantity}</p>
                         </div>
@@ -251,23 +326,10 @@ const CheckoutPage = () => {
                     type="radio"
                     className="custom-control-input"
                     name="payment"
-                    id="paypal"
-                  />
-                  <label className="custom-control-label" htmlFor="paypal">
-                    Paypal
-                  </label>
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="custom-control custom-radio">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    name="payment"
                     id="directcheck"
                   />
                   <label className="custom-control-label" htmlFor="directcheck">
-                    Direct Check
+                    Stripe payment
                   </label>
                 </div>
               </div>
@@ -283,12 +345,12 @@ const CheckoutPage = () => {
                     className="custom-control-label"
                     htmlFor="banktransfer"
                   >
-                    Bank Transfer
+                    Cash On Delivery
                   </label>
                 </div>
               </div>
-              <button className="btn btn-block btn-primary font-weight-bold py-3">
-                Place Order
+              <button className="btn btn-block btn-primary font-weight-bold py-3" onClick={handleCheckout}>
+                Checkout
               </button>
             </div>
           </div>

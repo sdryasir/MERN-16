@@ -8,8 +8,6 @@ function Cart() {
   const {cartState, incrementCart, decrementCart, removeFromCart, clearCart} = useCart();
 
 
-  console.log(cartState);
-
 
   const cartTotal = ()=>{
     let total = 0;
@@ -39,8 +37,8 @@ function Cart() {
             <tbody className="align-middle">
 
               {
-                cartState?.length>0 && cartState.map((item)=>(
-                  <tr>
+                cartState?.length>0 && cartState.map((item, idx)=>(
+                  <tr key={idx}>
                     <td className="align-middle">
                       <img src="img/product-1.jpg" alt="" style={{ width: "50px" }} /> {item?.title}
                     </td>
