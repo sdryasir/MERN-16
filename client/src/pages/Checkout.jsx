@@ -36,7 +36,7 @@ const CheckoutPage = () => {
     const [response, setResponse] = useState(null);
     
 
-    const [shippingCharges, setShippingCharges] = useState(300);
+    const [shippingCharges, setShippingCharges] = useState(10);
 
 
     const {
@@ -87,27 +87,35 @@ const CheckoutPage = () => {
 
 
     const handleCheckout = async () => {
+
+      const items = cartState.map((item)=>{
+        return {
+          title:item.title,
+          unit_price:item.price,
+          quantity:item.quantity
+        }
+      })
+
+      
       try {
-        // Call your backend to create a checkout session
         const response = await fetch("http://localhost:7000/checkout/sessions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            items: [
-              { id: "prod_123", quantity: 1 }, // pass cart items or product info
-            ],
-          }),
+          body: JSON.stringify({  items }),
         });
 
-        const session = await response.json();
+        const {id} = await response.json();
 
         // Redirect to Stripe Checkout
         const stripe = await stripePromise;
         const { error } = await stripe.redirectToCheckout({
-          sessionId: session.id,
+          sessionId: id,
         });
+
+
+        
 
         if (error) {
           console.error("Stripe Checkout Error:", error);

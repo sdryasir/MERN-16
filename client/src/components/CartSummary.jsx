@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 function CartSummary({total}) {
 
 
-    const [shippingCharges, setShippingCharges] = useState(300);
+    const [shippingCharges, setShippingCharges] = useState(10);
 
     const subTotal = total();
     
