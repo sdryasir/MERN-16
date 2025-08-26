@@ -87,6 +87,15 @@ const CheckoutPage = () => {
 
 
     const handleCheckout = async () => {
+
+      const cartItems = cartState.map((item)=>{
+        return {
+          name:item.title,
+          unit_amount:item.price,
+          quantity:item.quantity
+        }
+      })
+      
       try {
         // Call your backend to create a checkout session
         const response = await fetch("http://localhost:7000/checkout/sessions", {
@@ -95,9 +104,7 @@ const CheckoutPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            items: [
-              { id: "prod_123", quantity: 1 }, // pass cart items or product info
-            ],
+            items: cartItems,
           }),
         });
 
