@@ -1,112 +1,91 @@
-import React, { useContext } from 'react';
-import { CartContext } from '../App';
+import React from 'react';
+import Breadcrumb from '../components/Breadcrumb';
+import { useCart } from '../contexts/CartProvider';
+import CartSummary from '../components/CartSummary';
 
 function Cart() {
-  const { cart, setCart } = useContext(CartContext);
+  
+  const {cartState, incrementCart, decrementCart, removeFromCart, clearCart} = useCart();
 
-  const handleClearCart = () => {
-    setCart([]);
-  };
 
-  const handleDelete = (id) => {
-    const updatedCart = cart.filter(c => c._id !== id);
-    setCart(updatedCart);
-  };
 
-  const handleQtyIncrease = (item) => {
-    const updatedCart = cart.map(c =>
-      c._id === item._id ? { ...c, qty: c.qty + 1 } : c
-    );
-    setCart(updatedCart);
-  };
-
-  const handleQtyDecrease = (item) => {
-    const updatedCart = cart.map(c =>
-      c._id === item._id && c.qty > 1 ? { ...c, qty: c.qty - 1 } : c
-    );
-    setCart(updatedCart);
-  };
-
-  const handleChange = (e, item) => {
-    const qty = Math.max(1, parseInt(e.target.value) || 1);
-    const updatedCart = cart.map(c =>
-      c._id === item._id ? { ...c, qty: qty } : c
-    );
-    setCart(updatedCart);
-  };
+  const cartTotal = ()=>{
+    let total = 0;
+    cartState.map((item)=>{
+      total = total + item.price*item.quantity;
+    })
+    return total;
+  }
+  
 
   return (
-    <div className='container'>
-      <h2 className='my-4'>Your Cart</h2>
-      <table className='table'>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Total</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cart.map(item => (
-            <tr key={item.id}>
-              <td>
-                <img width={50} src={item.image} alt={item.title} />
-              </td>
-              <td>{item.title}</td>
-              <td>Rs. {item.price}</td>
-              <td>
-                <div className='d-flex align-items-center'>
-                  <button
-                    className='btn btn-dark'
-                    onClick={() => handleQtyDecrease(item)}
-                  >
-                    -
-                  </button>
-                  <input
-                    type='number'
-                    className='form-control text-center mx-1'
-                    value={item.qty}
-                    onChange={(e) => handleChange(e, item)}
-                    style={{ width: '60px' }}
-                    min="1"
-                  />
-                  <button
-                    className='btn btn-dark'
-                    onClick={() => handleQtyIncrease(item)}
-                  >
-                    +
-                  </button>
-                </div>
-              </td>
-              <td>Rs. {(item.price * item.qty).toFixed(2)}</td>
-              <td>
-                <button
-                  className='btn btn-danger'
-                  onClick={() => handleDelete(item._id)}
-                >
-                  <i className='bi bi-trash3'></i>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <>
+      <Breadcrumb/>
+      <div className="container-fluid">
+      <div className="row px-xl-5">
+        <div className="col-lg-8 table-responsive mb-5">
+          <table className="table table-light table-borderless table-hover text-center mb-0">
+            <thead className="thead-dark">
+              <tr>
+                <th>Products</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody className="align-middle">
 
-      {cart.length > 0 && (
-        <div className='d-flex justify-content-between align-items-center'>
-          <h4>
-            Grand Total: Rs.{" "}
-            {cart.reduce((total, item) => total + item.price * item.qty, 0).toFixed(2)}
-          </h4>
-          <button className='btn btn-danger' onClick={handleClearCart}>
-            Clear Cart
+              {
+                cartState?.length>0 && cartState.map((item, idx)=>(
+                  <tr key={idx}>
+                    <td className="align-middle">
+                      <img src="img/product-1.jpg" alt="" style={{ width: "50px" }} /> {item?.title}
+                    </td>
+                    <td className="align-middle">PKR. {item?.price}</td>
+                    <td className="align-middle">
+                      <div className="input-group quantity mx-auto" style={{ width: "100px" }}>
+                        <div className="input-group-btn">
+                          <button className="btn btn-sm btn-primary btn-minus" onClick={()=>decrementCart(item._id)}>
+                            <i className="fa fa-minus"></i>
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          className="form-control form-control-sm bg-secondary border-0 text-center"
+                          value={item?.quantity}
+                          readOnly
+                        />
+                        <div className="input-group-btn">
+                          <button className="btn btn-sm btn-primary btn-plus" onClick={()=>incrementCart(item._id)}>
+                            <i className="fa fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="align-middle">PKR. {item?.price * item?.quantity}</td>
+                    <td className="align-middle">
+                      <button className="btn btn-sm btn-danger" onClick={()=>removeFromCart(item._id)}>
+                        <i className="fa fa-times"></i>
+                      </button>
+                    </td>
+                  </tr>
+                )) 
+              }
+              
+
+            </tbody>
+          </table>
+          <button className="btn btn-sm btn-danger" onClick={clearCart}>
+            <span>Clear Cart </span>
+            <i className="fa fa-times"></i>
           </button>
         </div>
-      )}
+
+        <CartSummary total={cartTotal}/>
+      </div>
     </div>
+    </>
   );
 }
 

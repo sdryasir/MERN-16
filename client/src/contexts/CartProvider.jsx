@@ -7,24 +7,24 @@ const CartContext = createContext();
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_TO_CART': {
-      const item = action.payload;
-      const existingItem = state.find(cartItem => cartItem.id === item.id);
+      const existingItem = state.find(item => item._id == action.payload._id);
 
       if (existingItem) {
-        // Increase quantity if item already exists
-        return state.map(cartItem =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
+        // Item exists → increment quantity
+        return state.map(item =>
+          item._id == action.payload._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
-        // Add new item with quantity 1
-        return [...state, { ...item, quantity: 1 }];
+        // Item does not exist → add with quantity 1
+        return [...state, { ...action.payload, quantity: 1 }];
       }
     }
 
     case 'REMOVE_FROM_CART': {
-      return state.filter(item => item.id !== action.payload);
+      // assuming payload = id
+      return state.filter(item => item._id !== action.payload);
     }
 
     case 'CLEAR_CART': {
@@ -32,8 +32,9 @@ const cartReducer = (state, action) => {
     }
 
     case 'INCREMENT_CART': {
+      // assuming payload = id
       return state.map(item =>
-        item.id === action.payload
+        item._id === action.payload
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
@@ -41,7 +42,7 @@ const cartReducer = (state, action) => {
 
     case 'DECREMENT_CART': {
       return state.map(item =>
-        item.id === action.payload && item.quantity > 1
+        item._id === action.payload && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );
@@ -62,7 +63,7 @@ function CartProvider({children}) {
 
 
     const addToCart = (product)=> dispatch({type:'ADD_TO_CART', payload:product});
-    const removeFromCart = ()=> dispatch({type:'REMOVE_FROM_CART'});
+    const removeFromCart = (id)=> dispatch({type:'REMOVE_FROM_CART', payload:id});
     const clearCart = ()=> dispatch({type:'CLEAR_CART'});
     const incrementCart = (id)=> dispatch({type:'INCREMENT_CART', payload:id});
     const decrementCart = (id)=> dispatch({type:'DECREMENT_CART', payload:id});

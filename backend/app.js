@@ -4,6 +4,7 @@ import 'dotenv/config'
 import productRoutes from './routes/product.routes.js'
 import categoryRoutes from './routes/category.routes.js'
 import userRoutes from './routes/user.routes.js'
+import paymentRoute from './routes/payment.routes.js'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { connectDB } from './config/db.js';
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(productRoutes);
 app.use(categoryRoutes);
 app.use(userRoutes);
+app.use(paymentRoute);
 
 app.listen(port, ()=>{
     console.log(`Server is running on port ${port}`);

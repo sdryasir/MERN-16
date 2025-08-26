@@ -14,6 +14,40 @@ export const signupUser = async (req, res)=>{
     });
 }
 
+export const updateUser = async (req, res)=>{
+   
+   const data = req.body;
+   const {id} = req.params;
+
+   try {
+    const userObj = {
+    phone:data.mobile,
+    address:{
+        street: data.address1,
+        city: data.city,
+        state: data.province,
+        country: data.country,
+        postalCode: data.zip
+    }
+   }
+
+   const updated = await User.findByIdAndUpdate(id, userObj);
+
+    res.json({
+        message:'Users has been Updated',
+        user:updated,
+        success:true
+    });
+   } catch (error) {
+    res.json({
+        message: error?.message || 'Something went wrong',
+        success:false
+    });
+   }
+
+   
+}
+
 export const signinUser = async (req, res)=>{
    
    const {email, password} = req.body;
