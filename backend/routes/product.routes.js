@@ -6,7 +6,7 @@ const app = express();
 const router = express.Router()
 
 
-router.route('/products/add').post(isAuthenticated, upload.fields([
+router.route('/products/add').post(upload.fields([
       { name: 'mainImage', maxCount: 1 },
       { name: 'galleryImages', maxCount: 5 }, // or whatever max you prefer
     ]), createNewProduct)

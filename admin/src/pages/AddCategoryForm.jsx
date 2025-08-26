@@ -82,7 +82,7 @@ function AddCategoryForm() {
   return (
     <div className="container mt-4">
       <h4>Add New Category</h4>
-      <form onSubmit={handleSubmit(onSubmit)} className="p-4 border rounded bg-secondary" enctype="multipart/form-data">
+      <form onSubmit={handleSubmit(onSubmit)} className="p-4 border rounded bg-secondary" encType="multipart/form-data">
 
         {/* Title */}
         <div className="mb-3">

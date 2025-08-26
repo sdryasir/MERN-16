@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs "Node20"  // the name you configured in Jenkins
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('client') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Build Admin Panel') {
+            steps {
+                dir('admin') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('backend') {
+                    sh 'npm install'
+                    sh 'npm run build'  // or transpile if using TypeScript
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('backend') {
+                    sh 'npm test'  // add frontend/admin tests if needed
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying apps..."
+                // Example: copy build files or restart services
+                // You can use PowerShell or batch commands here on Windows
+            }
+        }
+    }
+}

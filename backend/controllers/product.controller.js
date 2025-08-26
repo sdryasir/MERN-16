@@ -28,9 +28,7 @@ export const createNewProduct = async (req, res)=>{
     data.size = JSON.parse(data.size);
     data.color = JSON.parse(data.color);
 
-
-    console.log("data ------- ", data);
-    
+   
 
     await Product.create(data)
     

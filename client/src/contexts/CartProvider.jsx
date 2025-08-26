@@ -7,19 +7,24 @@ const CartContext = createContext();
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_TO_CART': {
-      action.payload.quantity = 1;
-      const newState = [...state, action.payload];
-      console.log("++++++++++++", newState);
-      
-      return newState;
+      const item = action.payload;
+      const existingItem = state.find(cartItem => cartItem.id === item.id);
+
+      if (existingItem) {
+        // Increase quantity if item already exists
+        return state.map(cartItem =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        // Add new item with quantity 1
+        return [...state, { ...item, quantity: 1 }];
+      }
     }
 
     case 'REMOVE_FROM_CART': {
-      console.log('Removing item from cart');
-
-      // assuming payload = id
-      const newState = state.filter(item => item.id !== action.payload);
-      return newState;
+      return state.filter(item => item.id !== action.payload);
     }
 
     case 'CLEAR_CART': {
@@ -27,19 +32,14 @@ const cartReducer = (state, action) => {
     }
 
     case 'INCREMENT_CART': {
-      // assuming payload = id
-      let newState = state.map(item =>
-        item.id == action.payload
+      return state.map(item =>
+        item.id === action.payload
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
-      console.log("increment qty", newState);
-      
-      return newState
     }
 
     case 'DECREMENT_CART': {
-      // assuming payload = id
       return state.map(item =>
         item.id === action.payload && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
@@ -51,6 +51,7 @@ const cartReducer = (state, action) => {
       return state;
   }
 };
+
 
 
 function CartProvider({children}) {

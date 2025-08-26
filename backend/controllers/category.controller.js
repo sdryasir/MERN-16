@@ -3,28 +3,37 @@ import multer from 'multer';
 import path from 'path';
 
 export const createNewCategory = async (req, res)=>{
-   
+   try {
+    const { title, isPublic } = req.body;
 
-   const { title, isPublic } = req.body;
-   const image = req.file;
-
-   const img = {
-    public_id:image.filename,
-    secure_url:image.path
-   }
-
-   const data = {
-    title,
-    image:img,
-    isPublic
-   }
-
-    await Category.create(data)
+    const image = req.file;
     
-    res.json({
-        message:'Category has been saved',
-    });
+
+    const img = {
+        public_id:image.filename,
+        secure_url:image.path
+    }
+
+    const data = {
+        title,
+        image:img,
+        isPublic
+    }
+
+
+        await Category.create(data)
+        
+        res.json({
+            message:'Category has been saved',
+        });
+   } catch (error) {
+        res.json({
+            message:JSON.stringify(error),
+        });
+   }
 }
+
+
 export const getAllCategories = async (req, res)=>{
     const categories = await Category.find({})
     res.json(categories);
