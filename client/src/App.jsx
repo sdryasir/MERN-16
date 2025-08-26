@@ -20,6 +20,7 @@ import Dashboard from './pages/Dashboard';
 import Protected from './pages/Protected';
 import CartProvider from './contexts/CartProvider';
 import CheckoutPage from './pages/Checkout';
+import SuccessPage from './pages/PaymentSuccess';
 
 
 export const CartContext = createContext()
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="/signin" element={<SignInForm />} />
             <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
             <Route path="/checkout" element={<Protected><CheckoutPage/></Protected>} />
+            <Route path="/success" element={<Protected><SuccessPage/></Protected>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
