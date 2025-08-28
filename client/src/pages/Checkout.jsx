@@ -34,6 +34,8 @@ const CheckoutPage = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
+
+    const [amountError, setAmountError] = useState(null)
     
 
     const [shippingCharges, setShippingCharges] = useState(10);
@@ -84,9 +86,30 @@ const CheckoutPage = () => {
         }
     };
 
+    const cartTotal = ()=>{
+      let total = 0;
+      cartState.map((item)=>{
+            total = total + item.price*item.quantity;
+      })
+      return total;
+    }
+
+    const subTotal = cartTotal();
+        
+    
+    const tax = subTotal * 3/100;
+
 
 
     const handleCheckout = async () => {
+
+
+      const totalCheck = (subTotal + tax) / 280;
+
+      if(totalCheck<1) {
+        setAmountError('Your cart amount should be greater than $1');
+        return;
+      }
 
       const items = cartState.map((item)=>{
         return {
@@ -114,31 +137,14 @@ const CheckoutPage = () => {
           sessionId: id,
         });
 
-
-        
-
-        if (error) {
-          console.error("Stripe Checkout Error:", error);
-        }
       } catch (err) {
-        console.error("Checkout Error:", err);
+        console.error("Checkout Error:", err?.message);
       }
     }
     
         
 
-        const cartTotal = ()=>{
-            let total = 0;
-            cartState.map((item)=>{
-            total = total + item.price*item.quantity;
-            })
-            return total;
-        }
-
-        const subTotal = cartTotal();
         
-    
-        const tax = subTotal * 3/100;
 
   return (
     <div className="container-fluid">
@@ -360,6 +366,7 @@ const CheckoutPage = () => {
               <button className="btn btn-block btn-primary font-weight-bold py-3" onClick={handleCheckout}>
                 Checkout
               </button>
+              <p style={{color:'red'}}>{amountError && amountError}</p>
             </div>
           </div>
         </div>
