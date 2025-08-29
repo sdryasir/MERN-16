@@ -27,6 +27,7 @@ function Sidebar() {
                             <Link to="/add-product" className="dropdown-item">Add New Product</Link>
                         </div>
                     </div>
+                    <Link to="/orders" className="nav-item nav-link"><i className="fa fa-th me-2"></i>Orders</Link>
                     <a href="widget.html" className="nav-item nav-link"><i className="fa fa-th me-2"></i>Widgets</a>
                     <a href="form.html" className="nav-item nav-link"><i className="fa fa-keyboard me-2"></i>Forms</a>
                     <a href="table.html" className="nav-item nav-link"><i className="fa fa-table me-2"></i>Tables</a>

@@ -5,6 +5,8 @@ function OrderSuccess() {
   const [loading, setLoading] = useState(true);
   const [orderStatus, setOrderStatus] = useState(null);
   const [error, setError] = useState(null);
+  const [called, setCalled] = useState(false);
+
 
   // Grab sessionId from URL
   useEffect(() => {
@@ -15,7 +17,7 @@ function OrderSuccess() {
 
   // Confirm order with backend once sessionId is available
   useEffect(() => {
-    if (!sessionId) return; // prevent running before sessionId is set
+    if (!sessionId || called) return;
 
     const confirmOrder = async () => {
         console.log("confirm order");
@@ -33,15 +35,19 @@ function OrderSuccess() {
         }
 
         const res = await response.json();
-
-        console.log("++++++++++++++++++++++", res.data);
+        
+        const ord = {
+          id:res?.newOrder?._id,
+          orderStatus:res?.newOrder?.orderStatus
+        }
         
 
-        setOrderStatus(res.data);
+        setOrderStatus(ord);
       } catch (err) {
         setError(err.message || "Something went wrong");
       } finally {
         setLoading(false);
+        setCalled(true); // prevent re-call
       }
     };
 
@@ -51,14 +57,15 @@ function OrderSuccess() {
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>🎉 Payment Successful</h1>
-      <p>Session ID: {sessionId}</p>
 
       {loading && <p>Confirming your order...</p>}
       {error && <p style={{ color: "red" }}>❌ {error}</p>}
       {orderStatus && (
         <div>
           <p>✅ Order confirmed successfully!</p>
-          <pre>{JSON.stringify(orderStatus, null, 2)}</pre>
+          <p>Your Order Tracking ID: {orderStatus?.id}</p>
+          <p>Order Status: {orderStatus?.orderStatus}</p>
+          {/* <pre>{JSON.stringify(orderStatus, null, 2)}</pre> */}
         </div>
       )}
     </div>

@@ -1,6 +1,8 @@
 
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import Order from '../models/order.model.js';
+import { OrderBuilder } from '../utils/utils.js';
 
 export const stripePayment = async (req, res, next)=>{
   try {
@@ -25,8 +27,8 @@ export const stripePayment = async (req, res, next)=>{
     
 
     const session = await stripe.checkout.sessions.create({
-      success_url: 'http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: 'http://localhost:5173/cancel',
+      success_url: 'http://localhost:5174/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'http://localhost:5174/cancel',
       line_items: lineItems,
       mode: 'payment',
       payment_method_types: ["card"],
@@ -51,29 +53,34 @@ export const confirmOrder = async (req, res, next)=>{
   try {
     const {sessionId} = req.body;
 
-    console.log("sessionId**********", sessionId);
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    const lineItems = await stripe.checkout.sessions.listLineItems(sessionId, {
-      limit: 100,
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand:['line_items']
     });
 
 
+    const orderObj = OrderBuilder(session);
 
+    const newOrder = await Order.create(orderObj);
 
-    //Creates order and save it to DB
-
-
+    //sendEmail()
+    
     res.json({
-      lineItems
+      newOrder
     })
-    
-    
-
 
   } catch (error) {
     console.log("Session retrieve error", error);
-    
+    res.json({
+      message: error?.message || "Order could not be created. Something went wrog"
+    })
   }
 }
+
+
+
+
+
+// transformer.js
+
+

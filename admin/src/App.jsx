@@ -6,6 +6,7 @@ import AddCategoryForm from './pages/AddCategoryForm';
 import AddProductForm from './pages/AddProductForm';
 import Home from './pages/Home'
 import { BrowserRouter, Routes, Route } from "react-router";
+import Orders from './pages/Orders';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Home/>} />
           <Route path="/add-product" element={<AddProductForm/>} />
           <Route path="/add-category" element={<AddCategoryForm/>} />
+          <Route path="/orders" element={<Orders/>} />
         </Routes>
       </div>
       </BrowserRouter>
