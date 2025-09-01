@@ -6,6 +6,7 @@ import categoryRoutes from './routes/category.routes.js'
 import userRoutes from './routes/user.routes.js'
 import paymentRoute from './routes/payment.routes.js'
 import OrderRoutes from './routes/order.routes.js'
+import CartRoutes from './routes/cart.routes.js'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { connectDB } from './config/db.js';
@@ -28,6 +29,7 @@ app.use(categoryRoutes);
 app.use(userRoutes);
 app.use(paymentRoute);
 app.use(OrderRoutes);
+app.use(CartRoutes);
 
 app.listen(port, ()=>{
     console.log(`Server is running on port ${port}`);
