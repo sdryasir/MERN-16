@@ -1,45 +1,42 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const CartSchema = new mongoose.Schema(
-  {
-    user: {
-      type:mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    items: {
-      type: [
-        {
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Product",
-                required: true,
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                min: 1,
-            },
-            price: {
-                type: Number,
-                required: true,
-                min: 0,
-            },
-        }
-      ],
-      default: [],
-    },
-    subtotal: {
-      type: Number,
-      default: 0,
-    },
-    status: {
-      type: String,
-      enum: ["active", "abandoned", "ordered"],
-      default: "active",
-    },
-  },
-  { timestamps: true }
-);
+const cartItemSchema = new mongoose.Schema({
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  name: String,
+  price: Number,
+  quantity: { type: Number, default: 1 }
+});
 
-export const Cart = mongoose.model("Cart", CartSchema);
+const cartSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  items: [cartItemSchema],
+}, { timestamps: true });
+
+const Cart =  mongoose.model("Cart", cartSchema);
+export default Cart;
+
+
+
+// {
+//   userId:45698746666,
+//   items:[
+//     {
+//       productId:458796584522,
+//       name:"product Name",
+//       price:256,
+//       quantity:2
+//     },
+//     {
+//       productId:458796584522,
+//       name:"product Name",
+//       price:256,
+//       quantity:2
+//     },
+//     {
+//       productId:458796584522,
+//       name:"product Name",
+//       price:256,
+//       quantity:2
+//     }
+//   ]
+// }

@@ -1,11 +1,14 @@
 import React, {createContext, useContext, useState, useReducer} from 'react'
-
+import { useEffect } from 'react';
+import {useAuth} from './AuthProvider'
 
 const CartContext = createContext();
 
 
 const cartReducer = (state, action) => {
   switch (action.type) {
+    case "SET_CART":
+      return action.payload;
     case 'ADD_TO_CART': {
       const existingItem = state.find(item => item._id == action.payload._id);
 
@@ -54,20 +57,47 @@ const cartReducer = (state, action) => {
   }
 };
 
-
-
 function CartProvider({children}) {
 
   const [cart, setCart] = useState([])
 
- const [cartState, dispatch] = useReducer(cartReducer, cart);
+  const {user} = useAuth()
+  
+
+  const [cartState, dispatch] = useReducer(cartReducer, cart);
 
 
-    const addToCart = (product)=> dispatch({type:'ADD_TO_CART', payload:product});
+    const fetchCart = async (userId) => {
+      try {
+        const { data } = await fetch(`http://localhost:7000/cart-items/${userId}`);
+
+        console.log("data from backend", data);
+        
+        dispatch({ type: "SET_CART", payload: data || [] });
+      } catch (err) {
+        console.error("Error fetching cart:", err);
+      }
+    };
+    const addToCart = async (product)=> {
+      dispatch({type:'ADD_TO_CART', payload:product});
+      const res = await fetch(`http://localhost:7000/cart/add/${user?._id}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(product),
+      });
+    };
     const removeFromCart = (id)=> dispatch({type:'REMOVE_FROM_CART', payload:id});
     const clearCart = ()=> dispatch({type:'CLEAR_CART'});
     const incrementCart = (id)=> dispatch({type:'INCREMENT_CART', payload:id});
     const decrementCart = (id)=> dispatch({type:'DECREMENT_CART', payload:id});
+
+
+    useEffect(() => {
+      fetchCart(user?._id);
+    }, []);
 
   return (
     <CartContext.Provider value={{cartState, setCart, addToCart, removeFromCart, clearCart, incrementCart, decrementCart}}>
