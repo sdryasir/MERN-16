@@ -1,42 +1,21 @@
 import Cart from '../models/cart.model.js'
 
 export const addToCart = async (req, res)=>{
-    try {
-        const {userId} = req.params;
-        const body = req.body;
-        console.log("++++++++++++", {
-            userId,
-            body
-        });
-
-        const product = {
-            productId:body._id,
-            name:body.title,
-            price:body.price,
-            quantity:1
+      const { _id:productId, title:name, price } = req.body;
+      const {userId} = req.params;
+      try {
+        const cart = await getUserCart(userId);
+        const item = cart.items.find(i => i.productId.toString() === productId);
+        if (item) {
+          item.quantity += 1;
+        } else { 
+          cart.items.push({ productId, name, price, quantity: 1 });
         }
-
-        const cartItems = await Cart.find({userId});
-
-
-        const newCartArr = cartItems.push(product);
-
-        console.log("newCartArr", newCartArr);
-        
-
-        
-        // const cartItem = await Cart.create(body);
-        res.status(201).json({
-            success:true,
-        })
-
-    } catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: error?.message || 'Could not add Item to the cart, Please try again'
-        })        
-    }
+        await cart.save();
+        res.json(cart);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
 }
 
 export const removeFromCart = async (req, res)=>{
@@ -82,20 +61,13 @@ export const updateCart = async (req, res)=>{
     }
 }
 
-export const getAllCartItemsByUser = async (req, res)=>{
-    try {
-        const {userId} = req.params;
-        const cartItems = await Cart.find({userId});
-        res.status(200).json({
-            success:true,
-            data:cartItems
-        })
-    } catch (error) {
-        res.json({
-            success: false,
-            message: error?.message || 'Could get Items from the cart, Please try again'
-        })
+export const getUserCart = async (userId)=>{
+    let cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+        cart = await Cart.create({ userId, items: [] });
     }
+    return cart;
 }
 
 export const getSingleCartItem = async (req, res)=>{
@@ -110,6 +82,31 @@ export const getSingleCartItem = async (req, res)=>{
         res.json({
             success: false,
             message: error?.message || 'Could get Item from the cart, Please try again'
+        })
+    }
+}
+
+
+
+export const getAllCartItemsByUser = async (req, res)=>{
+    const {userId} = req.params;
+
+    console.log("---------------", userId);
+    
+
+    try {
+        const {userId} = req.params;
+        const cartItems = await Cart.findOne({userId});
+        console.log("********", cartItems);
+        
+        res.status(200).json({
+            success:true,
+            data:cartItems?.items || []
+        })
+    } catch (error) {
+        res.json({
+            success: false,
+            message: error?.message || 'Could get Items from the cart, Please try again'
         })
     }
 }

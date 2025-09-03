@@ -61,7 +61,10 @@ function CartProvider({children}) {
 
   const [cart, setCart] = useState([])
 
-  const {user} = useAuth()
+  const {user} = useAuth();
+
+  console.log("******************", user);
+  
   
 
   const [cartState, dispatch] = useReducer(cartReducer, cart);
@@ -69,7 +72,9 @@ function CartProvider({children}) {
 
     const fetchCart = async (userId) => {
       try {
-        const { data } = await fetch(`http://localhost:7000/cart-items/${userId}`);
+        const res = await fetch(`http://localhost:7000/cart-items/${userId}`);
+        const {data} = await res.json()
+
 
         console.log("data from backend", data);
         
@@ -96,8 +101,10 @@ function CartProvider({children}) {
 
 
     useEffect(() => {
-      fetchCart(user?._id);
-    }, []);
+      if(user?._id){
+        fetchCart(user?._id);
+      }
+    }, [user]);
 
   return (
     <CartContext.Provider value={{cartState, setCart, addToCart, removeFromCart, clearCart, incrementCart, decrementCart}}>
