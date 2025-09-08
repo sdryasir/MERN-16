@@ -1,5 +1,5 @@
 import express from 'express'
-import { addToCart, getAllCartItemsByUser, getSingleCartItem, removeFromCart, updateCart } from '../controllers/cart.controller.js';
+import { addToCart, getAllCartItemsByUser, getSingleCartItem, removeFromCart, incrementCartQty, decrementCartQty, clearCart } from '../controllers/cart.controller.js';
 
 const app = express();
 const router = express.Router()
@@ -7,8 +7,10 @@ const router = express.Router()
 router.route('/cart/add/:userId').post(addToCart)
 router.route('/cart-items/:userId').get(getAllCartItemsByUser)
 router.route('/cart/:id').get(getSingleCartItem)
-router.route('/cart/update/:id/:type').put(updateCart)
-router.route('/cart/delete/:id').delete(removeFromCart)
+router.route('/cart/increment/:userId').post(incrementCartQty)
+router.route('/cart/decrement/:userId').post(decrementCartQty)
+router.route('/cart/clear/:userId').delete(clearCart)
+router.route('/cart/delete/:productId/:userId').delete(removeFromCart)
 
 
 

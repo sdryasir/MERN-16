@@ -10,12 +10,13 @@ const cartReducer = (state, action) => {
     case "SET_CART":
       return action.payload;
     case 'ADD_TO_CART': {
-      const existingItem = state.find(item => item._id == action.payload._id);
+
+      const existingItem = state.find(item => item.productId == action.payload.productId);
 
       if (existingItem) {
         // Item exists → increment quantity
         return state.map(item =>
-          item._id == action.payload._id
+          item.productId == action.payload.productId
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -27,7 +28,7 @@ const cartReducer = (state, action) => {
 
     case 'REMOVE_FROM_CART': {
       // assuming payload = id
-      return state.filter(item => item._id !== action.payload);
+      return state.filter(item => item.productId !== action.payload);
     }
 
     case 'CLEAR_CART': {
@@ -37,7 +38,7 @@ const cartReducer = (state, action) => {
     case 'INCREMENT_CART': {
       // assuming payload = id
       return state.map(item =>
-        item._id === action.payload
+        item.productId === action.payload
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
@@ -46,7 +47,7 @@ const cartReducer = (state, action) => {
     case 'DECREMENT_CART': {
       // assuming payload = id
       return state.map(item =>
-        item._id === action.payload && item.quantity > 1
+        item.productId === action.payload && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );
@@ -63,10 +64,6 @@ function CartProvider({children}) {
 
   const {user} = useAuth();
 
-  console.log("******************", user);
-  
-  
-
   const [cartState, dispatch] = useReducer(cartReducer, cart);
 
 
@@ -75,29 +72,67 @@ function CartProvider({children}) {
         const res = await fetch(`http://localhost:7000/cart-items/${userId}`);
         const {data} = await res.json()
 
-
-        console.log("data from backend", data);
-        
         dispatch({ type: "SET_CART", payload: data || [] });
       } catch (err) {
         console.error("Error fetching cart:", err);
       }
     };
     const addToCart = async (product)=> {
-      dispatch({type:'ADD_TO_CART', payload:product});
+
+      const newProduct = {
+        productId:product._id,
+        name:product.title,
+        price:product.price
+      }
+
+      dispatch({type:'ADD_TO_CART', payload:newProduct});
       const res = await fetch(`http://localhost:7000/cart/add/${user?._id}`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify(newProduct),
+      });
+      
+    };
+    const removeFromCart = async (id)=> {
+      dispatch({type:'REMOVE_FROM_CART', payload:id})
+      const res = await fetch(`http://localhost:7000/cart/delete/${id}/${user?._id}`, {
+        method: "DELETE",
+        credentials: "include",
       });
     };
-    const removeFromCart = (id)=> dispatch({type:'REMOVE_FROM_CART', payload:id});
-    const clearCart = ()=> dispatch({type:'CLEAR_CART'});
-    const incrementCart = (id)=> dispatch({type:'INCREMENT_CART', payload:id});
-    const decrementCart = (id)=> dispatch({type:'DECREMENT_CART', payload:id});
+    const clearCart = async ()=> {
+      dispatch({type:'CLEAR_CART'});
+      const res = await fetch(`http://localhost:7000/cart/clear/${user?._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+    };
+
+    const incrementCart = async (id)=> {
+      dispatch({type:'INCREMENT_CART', payload:id})
+      const res = await fetch(`http://localhost:7000/cart/increment/${user?._id}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: id }),
+      });
+    };
+    const decrementCart = async (id)=> {
+      dispatch({type:'DECREMENT_CART', payload:id})
+      const res = await fetch(`http://localhost:7000/cart/decrement/${user?._id}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: id }),
+      });
+    };
 
 
     useEffect(() => {

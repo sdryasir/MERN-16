@@ -1,7 +1,7 @@
 import Cart from '../models/cart.model.js'
 
 export const addToCart = async (req, res)=>{
-      const { _id:productId, title:name, price } = req.body;
+      const { productId, name, price } = req.body;
       const {userId} = req.params;
       try {
         const cart = await getUserCart(userId);
@@ -19,46 +19,66 @@ export const addToCart = async (req, res)=>{
 }
 
 export const removeFromCart = async (req, res)=>{
-    try {
-        const {id} = req.params;
-        const cartItem = await Cart.findByIdAndDelete(id);
-         res.status(201).json({
-            success:true,
-        })
-    } catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: error?.message || 'Could delete Item from the cart, Please try again'
-        }) 
-    }
+      const { productId, userId } = req.params;
+        try {
+            const cart = await getUserCart(userId);
+
+            cart.items = cart.items.filter(i => i.productId.toString() != productId);
+            const cartRes = await cart.save();
+            res.json(cartRes);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
 }
 
 export const clearCart = async (req, res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
+  try {
+    const cart = await getUserCart(req.params.userId);
+    cart.items = [];
+    await cart.save();
+    res.json(cart);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
 
-export const updateCart = async (req, res)=>{
-    try {
-        const {id, type} = req.params;
+export const incrementCartQty = async (req, res)=>{
+      const { productId } = req.body;
+      const {userId} = req.params;
 
-        if(!id || !type) return;
 
-        if(type==='INCREMENT'){
-            
-        }else if(type==='DECREMENT'){
+      try {
+        const cart = await getUserCart(userId);
+        const item = cart.items.find(i => i.productId.toString() === productId);
 
-        }else{
-            return
+        if (item) {
+          item.quantity += 1;
         }
 
-    } catch (error) {
-        
-    }
+        await cart.save();
+        res.json(cart);
+      } catch (err) {
+
+        res.status(500).json({ error: err.message });
+      }
+}
+
+export const decrementCartQty = async (req, res)=>{
+      const { productId } = req.body;
+      const {userId} = req.params
+      try {
+        const cart = await getUserCart(userId);
+        const item = cart.items.find(i => i.productId.toString() === productId);
+
+        if (item && item.quantity > 1) {
+          item.quantity -= 1;
+        }
+
+        await cart.save();
+        res.json(cart);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
 }
 
 export const getUserCart = async (userId)=>{
@@ -90,15 +110,9 @@ export const getSingleCartItem = async (req, res)=>{
 
 export const getAllCartItemsByUser = async (req, res)=>{
     const {userId} = req.params;
-
-    console.log("---------------", userId);
-    
-
     try {
         const {userId} = req.params;
         const cartItems = await Cart.findOne({userId});
-        console.log("********", cartItems);
-        
         res.status(200).json({
             success:true,
             data:cartItems?.items || []

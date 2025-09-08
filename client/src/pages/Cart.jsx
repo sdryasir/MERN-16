@@ -6,8 +6,7 @@ import CartSummary from '../components/CartSummary';
 function Cart() {
   
   const {cartState, incrementCart, decrementCart, removeFromCart, clearCart} = useCart();
-
-
+  
 
   const cartTotal = ()=>{
     let total = 0;
@@ -40,13 +39,13 @@ function Cart() {
                 cartState?.length>0 && cartState.map((item, idx)=>(
                   <tr key={idx}>
                     <td className="align-middle">
-                      <img src="img/product-1.jpg" alt="" style={{ width: "50px" }} /> {item?.title}
+                      <img src="img/product-1.jpg" alt="" style={{ width: "50px" }} /> {item?.name}
                     </td>
                     <td className="align-middle">PKR. {item?.price}</td>
                     <td className="align-middle">
                       <div className="input-group quantity mx-auto" style={{ width: "100px" }}>
                         <div className="input-group-btn">
-                          <button className="btn btn-sm btn-primary btn-minus" onClick={()=>decrementCart(item._id)}>
+                          <button className="btn btn-sm btn-primary btn-minus" onClick={()=>decrementCart(item.productId)}>
                             <i className="fa fa-minus"></i>
                           </button>
                         </div>
@@ -57,7 +56,7 @@ function Cart() {
                           readOnly
                         />
                         <div className="input-group-btn">
-                          <button className="btn btn-sm btn-primary btn-plus" onClick={()=>incrementCart(item._id)}>
+                          <button className="btn btn-sm btn-primary btn-plus" onClick={()=>incrementCart(item.productId)}>
                             <i className="fa fa-plus"></i>
                           </button>
                         </div>
@@ -65,7 +64,7 @@ function Cart() {
                     </td>
                     <td className="align-middle">PKR. {item?.price * item?.quantity}</td>
                     <td className="align-middle">
-                      <button className="btn btn-sm btn-danger" onClick={()=>removeFromCart(item._id)}>
+                      <button className="btn btn-sm btn-danger" onClick={()=>removeFromCart(item.productId)}>
                         <i className="fa fa-times"></i>
                       </button>
                     </td>
