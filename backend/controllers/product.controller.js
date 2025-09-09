@@ -39,10 +39,30 @@ export const createNewProduct = async (req, res)=>{
         data:data
     });
 }
-export const getAllProducts = async (req, res)=>{
+export const getAllProducts = async (req, res) => {
+  try {
+    // page & limit from query params (defaults: page=1, limit=10)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // fetch products with pagination
     const products = await Product.find({})
-    res.json(products);
-}
+      .skip(skip)
+      .limit(limit);
+
+    // get total products count
+    const total = await Product.countDocuments();
+
+    res.json({
+      products,
+      hasMore: page * limit < total, // true if more pages available
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 export const getProductBySlug = async(req, res)=>{
     const {slug} = req.params;
     

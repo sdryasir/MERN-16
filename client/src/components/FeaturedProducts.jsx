@@ -3,7 +3,7 @@ import { Link, Navigate } from "react-router";
 import { useCart } from "../contexts/CartProvider";
 import { useAuth } from "../contexts/AuthProvider";
 import { useNavigate } from "react-router";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const renderStars = (rating) => {
@@ -26,7 +26,28 @@ const renderStars = (rating) => {
   return stars;
 };
 
-const FeaturedProducts = ({products}) => {
+const FeaturedProducts = () => {
+
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [limit, setLimit] = useState(4)
+
+  
+
+  const fetchProducts = async () => {
+    // const {data, error, loading} = useFetch(`http://localhost:7000/products?page=${page}&limit=${limit}`);
+    const res = await fetch(`http://localhost:7000/products?page=${page}&limit=${limit}`);
+    const data = await res.json();
+    setProducts((prev) => [...prev, ...data.products]);
+    setHasMore(data?.hasMore);
+    setPage((prev) => prev + 1);
+  };
+
+  useEffect(()=>{
+    fetchProducts();
+  }, [page])
+  
 
 
   const {addToCart, removeFromCart} = useCart();
@@ -43,9 +64,18 @@ const FeaturedProducts = ({products}) => {
       <h2 className="section-title position-relative text-uppercase mx-xl-5 mb-4">
         <span className="bg-secondary pr-3">Featured Products</span>
       </h2>
+
+
+<InfiniteScroll
+      dataLength={products.length}
+      next={fetchProducts}
+      hasMore={hasMore}
+      loader={<h4>Loading...</h4>}
+      endMessage={<p style={{ textAlign: "center" }}>No more products</p>}
+    >
       <div className="row px-xl-5">
-        {products?.map((product) => (
-          <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={product._id}>
+        {products?.map((product, idx) => (
+          <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={idx}>
             <div className="product-item bg-light mb-4">
               <div className="product-img position-relative overflow-hidden">
                 <img className="img-fluid w-100" src={`${product?.mainImage?.secure_url}`} alt={product.title} />
@@ -74,7 +104,9 @@ const FeaturedProducts = ({products}) => {
             </div>
           </div>
         ))}
+        
       </div>
+      </InfiniteScroll>
     </div>
   );
 };

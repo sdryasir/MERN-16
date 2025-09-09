@@ -65,3 +65,9 @@ body{
 .contant_box_404 {
   margin-top: -50px;
 }
+
+
+.infinite-scroll-component{
+  overflow: hidden!important;
+  overflow-y: auto;
+}

@@ -9,14 +9,12 @@ import { useFetch } from '../hook/useFetch';
 
 function Home({categories}) {
 
-  const {data:products, error, loading} = useFetch('http://localhost:7000/products');
-
   return (
     <>
        <CarouselSection/>
        <Features/>
        <Categories categories={categories}/>
-       <FeaturedProducts products={products}/>
+       <FeaturedProducts/>
        <SpecialOffers/>
        <RecentProducts/>
     </>
