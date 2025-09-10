@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from "react";
-import { useFetch } from "../hook/useFetch";
+import { Link } from "react-router";
 
 const Categories = ({categories}) => {
 
@@ -14,7 +13,7 @@ const Categories = ({categories}) => {
         {/* Repeatable Category Item */}
         {categories?.map((category, index) => (
           <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={index}>
-            <a className="text-decoration-none" href="#">
+            <Link className="text-decoration-none" to={`/shop/${category._id}`}>
               <div className="cat-item img-zoom d-flex align-items-center mb-4">
                 <div
                   className="overflow-hidden"
@@ -27,7 +26,7 @@ const Categories = ({categories}) => {
                   <small className="text-body">100 Products</small>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </div>

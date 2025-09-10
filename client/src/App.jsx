@@ -22,6 +22,7 @@ import CartProvider from './contexts/CartProvider';
 import CheckoutPage from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import OrderCancel from './pages/OrderCancel';
+import Shop from './pages/Shop';
 
 
 export const CartContext = createContext()
@@ -61,6 +62,7 @@ export default function App() {
             <Route path="/checkout" element={<Protected><CheckoutPage/></Protected>} />
             <Route path="/success" element={<OrderSuccess/>} />
             <Route path="/cancel" element={<Protected><OrderCancel/></Protected>} />
+            <Route path="/shop/:c_id" element={<Shop/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

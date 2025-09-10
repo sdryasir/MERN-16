@@ -28,10 +28,6 @@ export const createNewProduct = async (req, res)=>{
     data.size = JSON.parse(data.size);
     data.color = JSON.parse(data.color);
 
-
-    console.log("data ------- ", data);
-    
-
     await Product.create(data)
     
     res.json({
@@ -58,6 +54,19 @@ export const getAllProducts = async (req, res) => {
       products,
       hasMore: page * limit < total, // true if more pages available
     });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const getProductsByCategoryId = async (req, res) => {
+  try {
+
+    const {c_id} = req.params;
+   
+    const products = await Product.find({category: c_id})
+
+    res.json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ message: "Server error" });
