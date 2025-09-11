@@ -13,7 +13,7 @@ const Categories = ({categories}) => {
         {/* Repeatable Category Item */}
         {categories?.map((category, index) => (
           <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={index}>
-            <Link className="text-decoration-none" to={`/shop/${category._id}`}>
+            <Link className="text-decoration-none" to={`/shop?categoryId=${category._id}`}>
               <div className="cat-item img-zoom d-flex align-items-center mb-4">
                 <div
                   className="overflow-hidden"

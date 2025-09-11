@@ -11,7 +11,7 @@ router.route('/products/add').post(upload.fields([
       { name: 'galleryImages', maxCount: 5 }, // or whatever max you prefer
     ]), createNewProduct)
 router.route('/products').get(getAllProducts)
-router.route('/cat-products/:c_id').get(getProductsByCategoryId)
+// router.route('/cat-products/:c_id').get(getProductsByCategoryId)
 router.route('/product/:id').get(getProductById)
 router.route('/products/:slug').get(getProductBySlug)
 router.route('/product/update/:id').put(isAuthenticated, isAuthorized, updateProduct)

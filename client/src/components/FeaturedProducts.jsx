@@ -46,7 +46,7 @@ const FeaturedProducts = () => {
 
   useEffect(()=>{
     fetchProducts();
-  }, [page])
+  }, [])
   
 
 

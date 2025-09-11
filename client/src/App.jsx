@@ -62,7 +62,7 @@ export default function App() {
             <Route path="/checkout" element={<Protected><CheckoutPage/></Protected>} />
             <Route path="/success" element={<OrderSuccess/>} />
             <Route path="/cancel" element={<Protected><OrderCancel/></Protected>} />
-            <Route path="/shop/:c_id" element={<Shop/>} />
+            <Route path="/shop/:c_id?" element={<Shop/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

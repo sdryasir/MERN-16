@@ -1,4 +1,5 @@
 import Product from '../models/product.model.js'
+import mongoose from 'mongoose';
 
 export const createNewProduct = async (req, res)=>{
     const data = req.body;
@@ -35,30 +36,79 @@ export const createNewProduct = async (req, res)=>{
         data:data
     });
 }
+
+
 export const getAllProducts = async (req, res) => {
   try {
-    // page & limit from query params (defaults: page=1, limit=10)
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    // const { id } = req.params; // category id (optional)
+    const { 
+      categoryId,
+      search,        // search term
+      page = 1, 
+      limit = 10, 
+      sortBy = "createdAt",  // default sort field
+      order = "desc",        // default sort order
+      ...filters             // any other query filters
+    } = req.query;
 
-    // fetch products with pagination
-    const products = await Product.find({})
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // ---------- Build query ----------
+    let query = {};
+
+    // 1 - category filter
+    if (categoryId && categoryId !== "null" && categoryId !== "undefined") {      
+      query.category = new mongoose.Types.ObjectId(categoryId);
+    }
+
+    // 2 - search filter (case-insensitive on title & description)
+    if (search && search.trim() !== "" && search !== "null") {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    // 4 - extra filters (e.g., price, brand, etc.)
+    // remove reserved keys (page, limit, search, sortBy, order)
+    const reserved = ["page", "limit", "search", "sortBy", "order"];
+    Object.keys(filters).forEach(key => {
+      if (!reserved.includes(key)) {
+        query[key] = filters[key];
+      }
+    });
+
+    // ---------- Sorting ----------
+    const sortOrder = order === "asc" ? 1 : -1;
+    const sortOption = { [sortBy]: sortOrder };
+
+    // ---------- Fetch ----------
+    const products = await Product.find(query)
       .skip(skip)
-      .limit(limit);
+      .limit(limitNum)
+      .sort(sortOption);
 
-    // get total products count
-    const total = await Product.countDocuments();
+    const total = await Product.countDocuments(query);
 
     res.json({
       products,
-      hasMore: page * limit < total, // true if more pages available
+      total,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
+      hasMore: pageNum * limitNum < total
     });
+
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+
 export const getProductsByCategoryId = async (req, res) => {
   try {
 

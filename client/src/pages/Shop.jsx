@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router';
+import { useLocation } from "react-router";
 
 function Shop() {
-    const {c_id} = useParams();
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+     const search = queryParams.get("search");
+     const categoryId = queryParams.get("categoryId");
+
+    
 
     const [prods, setProds] = useState([])
 
 
-    const getProductsByCategoryId = async (cat_id)=>{
-        const res = await fetch(`http://localhost:7000/cat-products/${cat_id}`);
-        const products = await res.json();  
-        console.log("products", products);
-              
-        setProds(products)
+    const getProductsByCategoryId = async ()=>{
+        const res = await fetch(`http://localhost:7000/products?categoryId=${categoryId}&search=${search}`);
+        const products = await res.json();          
+        setProds(products.products)
     }
 
 
     useEffect(()=>{
-        getProductsByCategoryId(c_id);
-    }, [])
+        getProductsByCategoryId();
+    }, [categoryId, search])
 
 
   return (
