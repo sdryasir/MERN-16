@@ -11,12 +11,21 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { connectDB } from './config/db.js';
 import cors from 'cors'
+import http from 'node:http'
+import { Server } from "socket.io";
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:5174"], // frontend origins
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 const port = process.env.PORT || 5000
 
 connectDB().catch((e)=>console.log("Error in Connection", e));
-
-
 
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:5174"], // your frontend
@@ -31,7 +40,23 @@ app.use(paymentRoute);
 app.use(OrderRoutes);
 app.use(CartRoutes);
 
-app.listen(port, ()=>{
+
+
+io.on("connection", (socket)=>{
+  console.log("Hello", socket.id);
+  
+  socket.emit('abc', {message:'Hello I am updated string'})
+  socket.emit('abcf', {message:'Hanzala'})
+
+  socket.on('chat', (data)=>{
+    console.log(socket.id, "sent a message", data.chat);
+  })
+
+
+})
+
+
+server.listen(port, ()=>{
     console.log(`Server is running on port ${port}`);
 })
 

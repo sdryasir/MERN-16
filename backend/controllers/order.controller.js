@@ -1,8 +1,6 @@
 import Order from "../models/order.model.js"
 
 export const getAllOrders = async (req, res, next)=>{
-    console.log("Hello from All orders");
-    
     try {
         const orders = await Order.find({});
         res.status(200).json({
@@ -38,6 +36,7 @@ export const updateOrderById = async (req, res, next)=>{
         const {id} = req.params;
         const body = req.body;
         const order = await Order.findByIdAndUpdate(id, body); 
+
         res.status(200).json({
             order
         });
@@ -54,6 +53,7 @@ export const deleteOrderById = async (req, res, next)=>{
     try {
         const {id} = req.params;
         const order = await Order.findByIdAndDelete(id); 
+        
         res.status(200).json({
             order
         });
