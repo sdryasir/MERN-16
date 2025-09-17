@@ -23,6 +23,8 @@ const io = new Server(server, {
   }
 });
 
+app.set("io", io);
+
 const port = process.env.PORT || 5000
 
 connectDB().catch((e)=>console.log("Error in Connection", e));

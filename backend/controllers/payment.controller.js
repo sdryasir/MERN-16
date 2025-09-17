@@ -8,7 +8,6 @@ export const stripePayment = async (req, res, next)=>{
   try {
     const {items} = req.body;
 
-
     const lineItems = items.map((item)=>{
       return {
         price_data:{
@@ -23,8 +22,6 @@ export const stripePayment = async (req, res, next)=>{
     })
 
 
-    console.log("------req?.user?.id", req?.user?.id);
-    
 
     const session = await stripe.checkout.sessions.create({
       success_url: 'http://localhost:5174/success?session_id={CHECKOUT_SESSION_ID}',
@@ -39,7 +36,7 @@ export const stripePayment = async (req, res, next)=>{
     res.json({ id: session.id })
 
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     
     res.json({
       message: error?.message || 'Something went wrong while payment'
@@ -52,7 +49,7 @@ export const stripePayment = async (req, res, next)=>{
 export const confirmOrder = async (req, res, next)=>{
   try {
     const {sessionId} = req.body;
-
+    const io = req.app.get("io");
 
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand:['line_items']
@@ -62,6 +59,8 @@ export const confirmOrder = async (req, res, next)=>{
     const orderObj = OrderBuilder(session);
 
     const newOrder = await Order.create(orderObj);
+
+    io.emit("new-order", {newOrder})
 
     //sendEmail()
     

@@ -1,6 +1,22 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import socket from '../utils/utils'
 
 function Navbar() {
+
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        // listen for new order notifications
+        socket.on("new-order", (order) => {
+            setNotifications((prev) => [...prev, order.newOrder]);
+        });
+
+        // cleanup when component unmounts
+        return () => {
+        socket.off("new-order");
+        };
+    }, []);
+
   return (
     <nav className="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
                 <a href="index.html" className="navbar-brand d-flex d-lg-none me-4">
@@ -54,25 +70,29 @@ function Navbar() {
                     </div>
                     <div className="nav-item dropdown">
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i className="fa fa-bell me-lg-2"></i>
+                            <span className='position-relative'>
+                                <i className="fa fa-bell me-lg-2"></i>
+                                <span className='position-absolute' style={{top:'-18px', right:'8px'}}>{notifications.length}</span>
+                            </span>
                             <span className="d-none d-lg-inline-flex">Notificatin</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" className="dropdown-item">
-                                <h6 className="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr className="dropdown-divider"/>
-                            <a href="#" className="dropdown-item">
-                                <h6 className="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr className="dropdown-divider"/>
-                            <a href="#" className="dropdown-item">
-                                <h6 className="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr className="dropdown-divider"/>
+                            
+                            {
+                                notifications && notifications?.map((notification)=>{
+                                    return (
+                                        <>
+                                            <a href="#" className="dropdown-item">
+                                                <h6 className="fw-normal mb-0">{`New Order ${notification?.customer?.name}`}</h6>
+                                                <small>15 minutes ago</small>
+                                            </a>
+                                            <hr className="dropdown-divider"/>
+                                        </>
+                                    )
+                                })
+                            }
+                            
+                           
                             <a href="#" className="dropdown-item text-center">See all notifications</a>
                         </div>
                     </div>
