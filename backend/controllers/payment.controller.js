@@ -62,6 +62,10 @@ export const confirmOrder = async (req, res, next)=>{
     const orderObj = OrderBuilder(session);
 
     const newOrder = await Order.create(orderObj);
+    const socket = req.app.get("socket");
+    socket.emit('new-order', newOrder)
+
+
 
     //sendEmail()
     

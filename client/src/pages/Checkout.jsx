@@ -113,7 +113,7 @@ const CheckoutPage = () => {
 
       const items = cartState.map((item)=>{
         return {
-          title:item.title,
+          title:item.name,
           unit_price:item.price,
           quantity:item.quantity
         }
@@ -298,7 +298,7 @@ const CheckoutPage = () => {
                 cartState.map((item, idx)=>{
                     return (
                         <div key={idx} className="d-flex justify-content-between">
-                            <p>{item.title?.length > 15 ? item.title.slice(0, 30) + "..." : item.title}</p>
+                            <p>{item.name?.length > 15 ? item.name.slice(0, 30) + "..." : item.name}</p>
                             <p>PKR. {item.price*item.quantity}</p>
                         </div>
                     )
