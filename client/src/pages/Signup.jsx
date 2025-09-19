@@ -28,7 +28,7 @@ export default function SignupForm() {
   if(userLoading) return <p>Loading...</p>;
   if(user && user?.fullname) return <Navigate to='/'/>;
 
-  const {postData, response, error, loading} = usePost('http://localhost:7000/users/signup');
+  const {postData, response, error, loading} = usePost(`${import.meta.env.VITE_API_URL}/users/signup`);
 
   const {
     register,

@@ -78,7 +78,7 @@ export default function AddProductForm() {
 
   useEffect(()=>{
     const getAllCategories = async ()=>{
-      const response = await fetch('http://localhost:7000/categories');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
       const data = await response.json();
       setCategories(data);
     }
@@ -110,7 +110,7 @@ export default function AddProductForm() {
 
 
 
-    const res = await fetch('http://localhost:7000/products/add', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/products/add`, {
       method: 'POST',
       body: formData,
     });

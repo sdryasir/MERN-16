@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({children}) => {
 
-  const {data, error, loading} = useFetch('http://localhost:7000/users/me');
+  const {data, error, loading} = useFetch(`${import.meta.env.VITE_API_URL}/users/me`);
 
   const [user, setUser] = useState(null);
 
@@ -16,7 +16,7 @@ const AuthProvider = ({children}) => {
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:7000/users/logout', {
+      await fetch(`${import.meta.env.VITE_API_URL}/users/logout`, {
         method: 'POST',
         credentials: 'include', // important for cookies
       });

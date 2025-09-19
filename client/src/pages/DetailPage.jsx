@@ -13,7 +13,7 @@ function DetailPage() {
 
   useEffect(()=>{
       const getProductbySlug = async ()=>{
-        const res = await fetch(`http://localhost:7000/products/${slug}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/products/${slug}`);
         const data = await res.json();        
         setProduct(data.product[0]);
       }

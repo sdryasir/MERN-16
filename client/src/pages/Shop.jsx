@@ -17,7 +17,7 @@ function Shop() {
 
 
     const getProductsByCategoryId = async ()=>{
-        const res = await fetch(`http://localhost:7000/products?categoryId=${categoryId}&search=${search}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/products?categoryId=${categoryId}&search=${search}`);
         const data = await res.json();  
         console.log("Shop", data);
         setPages(data.pages);

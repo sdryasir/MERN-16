@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"], // frontend origins
+    origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:4000'], // frontend origins
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -30,7 +30,7 @@ const port = process.env.PORT || 5000
 connectDB().catch((e)=>console.log("Error in Connection", e));
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"], // your frontend
+  origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:4000'], // your frontend
   credentials: true                // allow cookies
 }));
 app.use(bodyParser.json());

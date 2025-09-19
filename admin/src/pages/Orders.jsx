@@ -4,7 +4,7 @@ import moment from "moment";
 
 function Orders() {
 
-    const {data, error, loading} = useFetch('http://localhost:7000/orders');
+    const {data, error, loading} = useFetch(`${import.meta.env.VITE_API_URL}/orders`);
 
     console.log(data);
     

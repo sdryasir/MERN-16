@@ -57,7 +57,7 @@ const CheckoutPage = () => {
 
     const onSubmit = async (data) => {
         try {
-          const res = await fetch(`http://localhost:7000/users/update/${user?._id}`, {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/users/update/${user?._id}`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -123,7 +123,7 @@ const CheckoutPage = () => {
 
       
       try {
-        const response = await fetch("http://localhost:7000/checkout/sessions", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/checkout/sessions`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

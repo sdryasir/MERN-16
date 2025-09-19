@@ -69,7 +69,7 @@ function CartProvider({children}) {
 
     const fetchCart = async (userId) => {
       try {
-        const res = await fetch(`http://localhost:7000/cart-items/${userId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/cart-items/${userId}`);
         const {data} = await res.json()
 
         dispatch({ type: "SET_CART", payload: data || [] });
@@ -86,7 +86,7 @@ function CartProvider({children}) {
       }
 
       dispatch({type:'ADD_TO_CART', payload:newProduct});
-      const res = await fetch(`http://localhost:7000/cart/add/${user?._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart/add/${user?._id}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -98,14 +98,14 @@ function CartProvider({children}) {
     };
     const removeFromCart = async (id)=> {
       dispatch({type:'REMOVE_FROM_CART', payload:id})
-      const res = await fetch(`http://localhost:7000/cart/delete/${id}/${user?._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart/delete/${id}/${user?._id}`, {
         method: "DELETE",
         credentials: "include",
       });
     };
     const clearCart = async ()=> {
       dispatch({type:'CLEAR_CART'});
-      const res = await fetch(`http://localhost:7000/cart/clear/${user?._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart/clear/${user?._id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -113,7 +113,7 @@ function CartProvider({children}) {
 
     const incrementCart = async (id)=> {
       dispatch({type:'INCREMENT_CART', payload:id})
-      const res = await fetch(`http://localhost:7000/cart/increment/${user?._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart/increment/${user?._id}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -124,7 +124,7 @@ function CartProvider({children}) {
     };
     const decrementCart = async (id)=> {
       dispatch({type:'DECREMENT_CART', payload:id})
-      const res = await fetch(`http://localhost:7000/cart/decrement/${user?._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart/decrement/${user?._id}`, {
         method: "POST",
         credentials: "include",
         headers: {

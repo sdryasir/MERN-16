@@ -36,7 +36,7 @@ export default function App() {
   });
 
 
-  const { data: categories, error, loading } = useFetch('http://localhost:7000/categories');
+  const { data: categories, error, loading } = useFetch(`${import.meta.env.VITE_API_URL}/categories`);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));

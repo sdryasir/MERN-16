@@ -24,7 +24,7 @@ function OrderSuccess() {
         
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:7000/order/confirm", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/order/confirm`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId }),

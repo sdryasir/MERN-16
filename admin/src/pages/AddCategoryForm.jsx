@@ -46,7 +46,7 @@ function AddCategoryForm() {
     }
 
     setLoading(true);
-    const res = await fetch('http://localhost:7000/categories/add', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/categories/add`, {
       method: 'POST',
       body: formData,
     });

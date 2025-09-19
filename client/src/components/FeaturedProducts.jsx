@@ -36,8 +36,7 @@ const FeaturedProducts = () => {
   
 
   const fetchProducts = async () => {
-    // const {data, error, loading} = useFetch(`http://localhost:7000/products?page=${page}&limit=${limit}`);
-    const res = await fetch(`http://localhost:7000/products?page=${page}&limit=${limit}`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/products?page=${page}&limit=${limit}`);
     const data = await res.json();
     setProducts((prev) => [...prev, ...data.products]);
     setHasMore(data?.hasMore);
