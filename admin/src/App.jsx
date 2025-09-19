@@ -11,14 +11,11 @@ import Orders from './pages/Orders';
 
 function App() {
 
-
-
   return (
     <div class="container-fluid position-relative d-flex p-0">
       <BrowserRouter>
       <Sidebar/>
       
-
       <div class="content">
         <Navbar/>
         <Routes>

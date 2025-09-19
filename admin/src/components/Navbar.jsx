@@ -1,21 +1,24 @@
-import React, {useState, useEffect} from 'react'
-import socket from '../utils/utils'
-
+import React, {useEffect, useState} from 'react'
+import socket from '../utils/socket';
+import moment from 'moment';
 function Navbar() {
 
-    const [notifications, setNotifications] = useState([]);
 
-    useEffect(() => {
-        // listen for new order notifications
-        socket.on("new-order", (order) => {
-            setNotifications((prev) => [...prev, order.newOrder]);
-        });
+  const [notifications, setNotifications] = useState([]);
 
-        // cleanup when component unmounts
-        return () => {
-        socket.off("new-order");
-        };
-    }, []);
+  useEffect(()=>{
+    const handleNewOrder = (data) => {
+        setNotifications((prev) => [...prev, data]);
+    };
+
+    socket.on("new-order", handleNewOrder);
+
+    return () => {
+        socket.off("new-order", handleNewOrder); // cleanup
+    };
+  },[])
+
+
 
   return (
     <nav className="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
@@ -72,19 +75,22 @@ function Navbar() {
                         <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <span className='position-relative'>
                                 <i className="fa fa-bell me-lg-2"></i>
-                                <span className='position-absolute' style={{top:'-18px', right:'8px'}}>{notifications.length}</span>
+                                {
+                                    notifications.length ==0 ? null :<span className='position-absolute' style={{top:'-15px', right:'9px', color:'red'}}>{notifications.length}</span>
+                                }
                             </span>
                             <span className="d-none d-lg-inline-flex">Notificatin</span>
                         </a>
                         <div className="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                             
                             {
+                                notifications?.length ==0? <p>No notitfication</p>:
                                 notifications && notifications?.map((notification)=>{
                                     return (
                                         <>
                                             <a href="#" className="dropdown-item">
-                                                <h6 className="fw-normal mb-0">{`New Order ${notification?.customer?.name}`}</h6>
-                                                <small>15 minutes ago</small>
+                                                <h6 className="fw-normal mb-0">{notification?.customer?.name} Created Order</h6>
+                                                <small>{moment.utc(notification?.createdAt).fromNow()}</small>
                                             </a>
                                             <hr className="dropdown-divider"/>
                                         </>
@@ -92,8 +98,10 @@ function Navbar() {
                                 })
                             }
                             
+                            
+                            
                            
-                            <a href="#" className="dropdown-item text-center">See all notifications</a>
+                            {/* <a href="#" className="dropdown-item text-center">See all notifications</a> */}
                         </div>
                     </div>
                     <div className="nav-item dropdown">
