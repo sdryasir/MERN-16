@@ -38,7 +38,7 @@ const FeaturedProducts = () => {
   const fetchProducts = async () => {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/products?page=${page}&limit=${limit}`);
     const data = await res.json();
-    setProducts((prev) => [...prev, ...data.products]);
+    setProducts((prev) => [...prev, ...data?.products]);
     setHasMore(data?.hasMore);
     setPage((prev) => prev + 1);
   };
