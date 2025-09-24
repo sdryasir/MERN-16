@@ -28,7 +28,7 @@ export default function SignInForm() {
 
   const navigate = useNavigate();
 
-  const {postData, response, error, loading} = usePost(`${import.meta.env.VITE_API_URL}:7000/users/signin`);
+  const {postData, response, error, loading} = usePost(`${import.meta.env.VITE_API_URL}/users/signin`);
 
 
   const onSubmit = async (data) => {
