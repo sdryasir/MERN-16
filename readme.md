@@ -6,3 +6,11 @@
 - Whitelisted 'http://localhost:4000', 'http://localhost:3000' in backend CORS
 - Replace MONGO_DB_URI='mongodb://localhost:27017/e-commerce-b-16' with MONGO_DB_URI=mongodb://root:example@mongo:27017/e-commerce-b-16?authSource=admin
 
+
+### How I fixed deployment issues
+
+- Changed the root directory to "backend"
+- Upload environment variables to render "Environment tab"
+- added environment variable to admin and client app inside netly dashboard.
+- Whitelisted CORS in backend app
+
