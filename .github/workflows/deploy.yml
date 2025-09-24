@@ -15,10 +15,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install dependencies (Client)
-        run: npm ci
+        run: npm install
         working-directory: ./client
 
       - name: Build Client
@@ -48,10 +48,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install dependencies (Admin)
-        run: npm ci
+        run: npm install --legacy-peer-deps
         working-directory: ./admin
 
       - name: Build Admin
