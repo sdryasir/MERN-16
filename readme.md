@@ -9,8 +9,8 @@
 
 ### How I fixed deployment issues
 
-- Changed the root directory to "backend"
+- Changed the root directory to "backend" on Render
 - Upload environment variables to render "Environment tab"
-- added environment variable to admin and client app inside netly dashboard.
+- added environment variable to admin and client app inside netlifyy dashboard.
 - Whitelisted CORS in backend app
 
