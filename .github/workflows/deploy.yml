@@ -27,6 +27,13 @@ jobs:
             backend:
               - 'backend/**'
 
+      # Debug: print detected outputs
+      - name: Debug changed folders
+        run: |
+          echo "Client changed? ${{ steps.filter.outputs.client }}"
+          echo "Admin changed? ${{ steps.filter.outputs.admin }}"
+          echo "Backend changed? ${{ steps.filter.outputs.backend }}"
+
   client:
     name: Deploy Client to Netlify
     runs-on: ubuntu-latest
