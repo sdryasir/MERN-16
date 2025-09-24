@@ -3,6 +3,7 @@ name: Deploy Mernstack App
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   changes:
@@ -13,7 +14,10 @@ jobs:
       admin: ${{ steps.filter.outputs.admin }}
       backend: ${{ steps.filter.outputs.backend }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout (fetch full history so paths-filter can work)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Detect changes
         id: filter
@@ -27,29 +31,34 @@ jobs:
             backend:
               - 'backend/**'
 
-      # Debug: print detected outputs
       - name: Debug changed folders
         run: |
-          echo "Client changed? ${{ steps.filter.outputs.client }}"
-          echo "Admin changed? ${{ steps.filter.outputs.admin }}"
-          echo "Backend changed? ${{ steps.filter.outputs.backend }}"
+          echo "---- paths-filter outputs ----"
+          echo "client: '${{ steps.filter.outputs.client }}'"
+          echo "admin:  '${{ steps.filter.outputs.admin }}'"
+          echo "backend: '${{ steps.filter.outputs.backend }}'"
+          echo "------------------------------"
 
   client:
     name: Deploy Client to Netlify
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.client == 'true'
-    defaults:
-      run:
-        working-directory: ./client
+    if: ${{ fromJSON(needs.changes.outputs.client) }}
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (Client)
+        run: npm ci
+        working-directory: ./client
 
       - name: Build Client
         run: npm run build
+        working-directory: ./client
 
       - name: Deploy to Netlify (Client)
         uses: nwtgck/actions-netlify@v2
@@ -69,18 +78,22 @@ jobs:
     name: Deploy Admin to Netlify
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.admin == 'true'
-    defaults:
-      run:
-        working-directory: ./admin
+    if: ${{ fromJSON(needs.changes.outputs.admin) }}
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (Admin)
+        run: npm ci
+        working-directory: ./admin
 
       - name: Build Admin
         run: npm run build
+        working-directory: ./admin
 
       - name: Deploy to Netlify (Admin)
         uses: nwtgck/actions-netlify@v2
@@ -100,7 +113,7 @@ jobs:
     name: Deploy Backend to Render
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.backend == 'true'
+    if: ${{ fromJSON(needs.changes.outputs.backend) }}
     steps:
       - name: Deploy to Render
         uses: render-oss/deploy-action@v1
