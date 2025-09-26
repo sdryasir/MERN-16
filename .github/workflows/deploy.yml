@@ -38,6 +38,7 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.CLIENT_SITE_ID }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   admin:
     name: Deploy Admin to Netlify
@@ -71,6 +72,7 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.ADMIN_SITE_ID }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   backend:
     name: Deploy Backend to Render

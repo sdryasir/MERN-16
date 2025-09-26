@@ -13,4 +13,5 @@
 - Upload environment variables to render "Environment tab"
 - added environment variable to admin and client app inside netlifyy dashboard.
 - Whitelisted CORS in backend app
+- Updated VITE_API_URL in the client & admin in the deploy.yml, also added VITE_API_URL to github action secrets
 

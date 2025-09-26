@@ -36,7 +36,6 @@ const FeaturedProducts = () => {
   
 
   const fetchProducts = async () => {
-    console.log("8888888888888888888", import.meta.env.VITE_API_URL)
     const res = await fetch(`${import.meta.env.VITE_API_URL}/products?page=${page}&limit=${limit}`);
     const data = await res.json();
     setProducts((prev) => [...prev, ...data?.products]);
