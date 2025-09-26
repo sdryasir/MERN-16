@@ -15,9 +15,31 @@ import http from 'node:http'
 import { Server } from "socket.io";
 const server = http.createServer(app);
 
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // frontend origins
+//     methods: ["GET", "POST"],
+//     credentials: true
+//   }
+// });
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:4000",
+  "http://localhost:3000",
+  "https://e-commerce-admin-b-16.netlify.app",
+  "https://e-commerce-client-b-16.netlify.app"
+];
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // frontend origins
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (origin.endsWith(".netlify.app")) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -29,10 +51,36 @@ const port = process.env.PORT || 5000
 
 connectDB().catch((e)=>console.log("Error in Connection", e));
 
+// app.use(cors({
+//   origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // https://e-commerce-client-b-16.netlify.app
+//   credentials: true                // allow cookies
+// }));
+
+
+
+
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // https://e-commerce-client-b-16.netlify.app
-  credentials: true                // allow cookies
+  origin: (origin, callback) => {
+    // allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    // allow any Netlify deploy preview
+    if (origin.endsWith(".netlify.app")) {
+      return callback(null, true);
+    }
+
+    // allow exact matches
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // block everything else
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
 }));
+
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(productRoutes);
