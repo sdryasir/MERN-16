@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app/', 'https://e-commerce-client-b-16.netlify.app/'], // frontend origins
+    origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // frontend origins
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -30,7 +30,7 @@ const port = process.env.PORT || 5000
 connectDB().catch((e)=>console.log("Error in Connection", e));
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app/', 'https://e-commerce-client-b-16.netlify.app/'], // your frontend
+  origin: ["http://localhost:5173", "http://localhost:5174", 'http://localhost:4000', 'http://localhost:3000', 'https://e-commerce-admin-b-16.netlify.app', 'https://e-commerce-client-b-16.netlify.app'], // https://e-commerce-client-b-16.netlify.app
   credentials: true                // allow cookies
 }));
 app.use(bodyParser.json());
