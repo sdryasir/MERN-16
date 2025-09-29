@@ -93,15 +93,7 @@ app.use(CartRoutes);
 
 
 io.on("connection", (socket)=>{
-  console.log("Hello", socket.id);
-  
-  // socket.emit('abc', {message:'Hello I am updated string'})
-  // socket.emit('abcf', {message:'Hanzala'})
-
-  // socket.on('chat', (data)=>{
-  //   console.log(socket.id, "sent a message", data.chat);
-  // })
-
+  console.log("New User Connected", socket.id);
 })
 
 

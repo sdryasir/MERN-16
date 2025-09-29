@@ -4,14 +4,22 @@ import jwt from "jsonwebtoken";
 
 export const signupUser = async (req, res)=>{
    
-   const data = req.body;
-   const hashedPassword = await bcrypt.hash(data.password, 10);
-   data.password = hashedPassword;
-    await User.create(data);
-    
-    res.json({
-        message:'Category has been saved',
-    });
+   try {
+    const data = req.body;
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    data.password = hashedPassword;
+        await User.create(data);
+        
+        res.json({
+            message:'User has been Created',
+            success:true
+        });
+   } catch (error) {
+       res.json({
+            message: error?.message || 'User could not be Created',
+            success:false
+        }); 
+   }
 }
 
 export const updateUser = async (req, res)=>{

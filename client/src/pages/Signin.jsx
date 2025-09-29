@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePost } from "../hook/usePost";
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../contexts/AuthProvider";
-import { Navigate } from "react-router";
+import { Navigate } from "react-router-dom";
 
 // Zod schema for validation
 const schema = z.object({

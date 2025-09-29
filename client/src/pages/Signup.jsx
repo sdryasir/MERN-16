@@ -29,7 +29,8 @@ export default function SignupForm() {
   if(user && user?.fullname) return <Navigate to='/'/>;
 
   const {postData, response, error, loading} = usePost(`${import.meta.env.VITE_API_URL}/users/signup`);
-
+  console.log("??????????", response);
+  
   const {
     register,
     handleSubmit,
@@ -120,8 +121,8 @@ export default function SignupForm() {
           )}
         </div>
 
-        <button type="submit" className="btn btn-primary mt-3">
-          Register
+        <button type="submit" className="btn btn-primary mt-3" disabled={loading}>
+          {loading ? "Creating User..." : "Register"}
         </button>
       </form>
     </div>
