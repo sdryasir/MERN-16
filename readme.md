@@ -16,6 +16,7 @@
 - Updated VITE_API_URL in the client & admin in the deploy.yml, also added VITE_API_URL to github action secrets
 - moved env section for VITE_API_URL up to the build section
 - made the cors issues dynamic
+- secure: true, sameSite: "none" while setting cookie
 
 
 ### How to push Docker Image to Docker Hub

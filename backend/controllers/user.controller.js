@@ -92,8 +92,8 @@ export const signinUser = async (req, res)=>{
    res.cookie("jwt-token", token, {
     httpOnly: true,
     maxAge: 3600000, // 60 minutes
-    secure: false,
-    sameSite: "lax"
+    secure: true,
+    sameSite: "none"
    });
 
    res.json({
