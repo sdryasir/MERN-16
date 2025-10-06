@@ -7,6 +7,10 @@ import { useAuth } from '../contexts/AuthProvider'
 function Topbar() {
 
   const {user, error, loading, logout} = useAuth();
+
+  console.log("$$$$$$$$$$$$", user);
+  console.log("$$$$$$$$$$$$-000000", error);
+  
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
