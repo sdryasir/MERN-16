@@ -32,9 +32,11 @@ export default function SignInForm() {
 
 
   const onSubmit = async (data) => {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2");
+    
     await postData(data);
-    // navigate('/');
-    window.location.href= '/'
+    navigate('/');
+    // window.location.href= '/'
   };
 
   return (

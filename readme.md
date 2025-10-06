@@ -17,3 +17,12 @@
 - moved env section for VITE_API_URL up to the build section
 - made the cors issues dynamic
 
+
+### How to push Docker Image to Docker Hub
+
+- launch the command "docker images" to see all images
+- Rename all the images like this "docker tag mern-16-backend sdryasir/mern-16-backend:v1.0"
+- launch the command "docker login" and follow the instructions
+- After success login: "docker push sdryasir/mern-16-backend:v1.0"
+
+
